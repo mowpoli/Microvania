@@ -12,9 +12,12 @@ var coyote_timer := 0.0
 var jump_buffer_timer := 0.0
 @export var camera_look_ahead := 10.0
 @export var camera_look_speed := 50.0
+var facing_direction := 1.0
 
 @onready var camera := $Camera2D
 @onready var attack_hitbox := $AttackArea/CollisionShape2D
+@onready var attack_visual := $AttackArea/AttackVisual
+@onready var attack_area := $AttackArea
 
 var is_attacking := false
 @export var death_y := 650.0
@@ -25,9 +28,13 @@ var spawn_position: Vector2
 func _ready():
 	spawn_position = global_position
 	attack_hitbox.disabled = true
+	attack_area.position.x = 45 * facing_direction
 
 func _physics_process(delta):
 	var direction = Input.get_axis("ui_left", "ui_right")
+	if direction != 0:
+		facing_direction = direction
+		attack_area.position.x = 45 * facing_direction
 	var target_camera_x = direction * camera_look_ahead
 
 	camera.offset.x = move_toward(
@@ -82,10 +89,12 @@ func _physics_process(delta):
 func attack():
 	is_attacking = true
 	attack_hitbox.set_deferred("disabled", false)
+	attack_visual.visible = true
 
 	await get_tree().create_timer(0.12).timeout
 
 	attack_hitbox.set_deferred("disabled", true)
+	attack_visual.visible = false
 	is_attacking = false
 
 
@@ -99,6 +108,9 @@ func _on_attack_area_area_entered(area: Area2D) -> void:
 		area.take_damage()
 
 func _on_attack_area_body_entered(body: Node2D) -> void:
+	if body == self:
+		return
+
 	if body.has_method("take_damage"):
 		body.take_damage()
 

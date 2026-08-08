@@ -31,6 +31,9 @@ size = Vector2(50, 50)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_n5ubx"]
 size = Vector2(55, 55)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v63ap"]
+size = Vector2(400, 150)
+
 [node name="Node2D" type="Node2D" unique_id=656272768]
 
 [node name="StaticBody2D (Floor)Left" type="StaticBody2D" parent="." unique_id=167917517]
@@ -94,8 +97,15 @@ position_smoothing_enabled = true
 [node name="AttackArea" type="Area2D" parent="Player" unique_id=1530978251]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player/AttackArea" unique_id=670879477]
-position = Vector2(45, 0)
 shape = SubResource("RectangleShape2D_i6x1h")
+
+[node name="AttackVisual" type="ColorRect" parent="Player/AttackArea" unique_id=403523166]
+visible = false
+offset_left = -25.0
+offset_top = -20.0
+offset_right = 25.0
+offset_bottom = 20.0
+color = Color(0.47784525, 0.5820828, 0.23538151, 1)
 
 [node name="StaticBody2D2 (Wallelft)" type="StaticBody2D" parent="." unique_id=1864121525]
 
@@ -193,7 +203,7 @@ color = Color(1, 1, 0.41960785, 1)
 metadata/_edit_use_anchors_ = true
 
 [node name="Dummy" type="Area2D" parent="." unique_id=693956580]
-position = Vector2(722, 313)
+position = Vector2(732, 303)
 script = ExtResource("2_0xm2m")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Dummy" unique_id=1361968754]
@@ -209,26 +219,32 @@ color = Color(1, 0.40392157, 1, 1)
 metadata/_edit_use_anchors_ = true
 
 [node name="Enemy" type="CharacterBody2D" parent="." unique_id=254821797]
+position = Vector2(450, 450)
 script = ExtResource("3_h2yge")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy" unique_id=656468973]
-position = Vector2(473, 440)
 shape = SubResource("RectangleShape2D_tc6ws")
 
 [node name="ColorRect" type="ColorRect" parent="Enemy" unique_id=490546881]
-offset_left = 448.0
-offset_top = 415.0
-offset_right = 498.0
-offset_bottom = 465.0
+offset_left = -25.0
+offset_top = -25.0
+offset_right = 25.0
+offset_bottom = 25.0
 color = Color(0.9764706, 0.40784314, 0.4117647, 1)
 
 [node name="DamageArea" type="Area2D" parent="Enemy" unique_id=498622323]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy/DamageArea" unique_id=773948168]
-position = Vector2(473, 440)
 shape = SubResource("RectangleShape2D_n5ubx")
+
+[node name="DetectionArea" type="Area2D" parent="Enemy" unique_id=1048537129]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy/DetectionArea" unique_id=1803111419]
+shape = SubResource("RectangleShape2D_v63ap")
 
 [connection signal="area_entered" from="Player/AttackArea" to="Player" method="_on_attack_area_area_entered"]
 [connection signal="body_entered" from="Player/AttackArea" to="Player" method="_on_attack_area_body_entered"]
 [connection signal="body_entered" from="Checkpoint" to="Player" method="_on_checkpoint_body_entered"]
 [connection signal="body_entered" from="Enemy/DamageArea" to="Enemy" method="_on_damage_area_body_entered"]
+[connection signal="body_entered" from="Enemy/DetectionArea" to="Enemy" method="_on_detection_area_body_entered"]
+[connection signal="body_exited" from="Enemy/DetectionArea" to="Enemy" method="_on_detection_area_body_exited"]
