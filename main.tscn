@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bxcs6yvlo8bql" path="res://player.gd" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://qxj5bkkxfarx" path="res://dummy.gd" id="2_0xm2m"]
+[ext_resource type="Script" uid="uid://dgqlant2dfu8i" path="res://enemy.gd" id="3_h2yge"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h0jfm"]
 size = Vector2(1600, 50)
@@ -23,6 +24,12 @@ size = Vector2(60, 80)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mpml7"]
 size = Vector2(50, 70)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tc6ws"]
+size = Vector2(50, 50)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_n5ubx"]
+size = Vector2(55, 55)
 
 [node name="Node2D" type="Node2D" unique_id=656272768]
 
@@ -154,6 +161,22 @@ offset_bottom = 15.0
 scale = Vector2(0.5, 1)
 metadata/_edit_use_anchors_ = true
 
+[node name="StaticBody2D (Plat04)" type="StaticBody2D" parent="." unique_id=1545387385]
+position = Vector2(693, 441)
+scale = Vector2(0.3, 1.88)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D (Plat04)" unique_id=804497573]
+scale = Vector2(0.3, 1.88)
+shape = SubResource("RectangleShape2D_bl6ij")
+
+[node name="ColorRect" type="ColorRect" parent="StaticBody2D (Plat04)" unique_id=868689632]
+offset_left = -36.66667
+offset_top = -28.19149
+offset_right = 213.33333
+offset_bottom = 1.8085098
+scale = Vector2(0.3, 1.88)
+metadata/_edit_use_anchors_ = true
+
 [node name="Checkpoint" type="Area2D" parent="." unique_id=195817977]
 position = Vector2(1187, 377)
 
@@ -170,7 +193,7 @@ color = Color(1, 1, 0.41960785, 1)
 metadata/_edit_use_anchors_ = true
 
 [node name="Dummy" type="Area2D" parent="." unique_id=693956580]
-position = Vector2(426, 419)
+position = Vector2(722, 313)
 script = ExtResource("2_0xm2m")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Dummy" unique_id=1361968754]
@@ -185,5 +208,27 @@ offset_bottom = 69.0
 color = Color(1, 0.40392157, 1, 1)
 metadata/_edit_use_anchors_ = true
 
+[node name="Enemy" type="CharacterBody2D" parent="." unique_id=254821797]
+script = ExtResource("3_h2yge")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy" unique_id=656468973]
+position = Vector2(473, 440)
+shape = SubResource("RectangleShape2D_tc6ws")
+
+[node name="ColorRect" type="ColorRect" parent="Enemy" unique_id=490546881]
+offset_left = 448.0
+offset_top = 415.0
+offset_right = 498.0
+offset_bottom = 465.0
+color = Color(0.9764706, 0.40784314, 0.4117647, 1)
+
+[node name="DamageArea" type="Area2D" parent="Enemy" unique_id=498622323]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy/DamageArea" unique_id=773948168]
+position = Vector2(473, 440)
+shape = SubResource("RectangleShape2D_n5ubx")
+
 [connection signal="area_entered" from="Player/AttackArea" to="Player" method="_on_attack_area_area_entered"]
+[connection signal="body_entered" from="Player/AttackArea" to="Player" method="_on_attack_area_body_entered"]
 [connection signal="body_entered" from="Checkpoint" to="Player" method="_on_checkpoint_body_entered"]
+[connection signal="body_entered" from="Enemy/DamageArea" to="Enemy" method="_on_damage_area_body_entered"]

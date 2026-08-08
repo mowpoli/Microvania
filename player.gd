@@ -19,6 +19,8 @@ var jump_buffer_timer := 0.0
 var is_attacking := false
 @export var death_y := 650.0
 var spawn_position: Vector2
+@export var health := 3
+
 
 func _ready():
 	spawn_position = global_position
@@ -95,3 +97,16 @@ func _on_checkpoint_body_entered(body: Node2D) -> void:
 func _on_attack_area_area_entered(area: Area2D) -> void:
 	if area.has_method("take_damage"):
 		area.take_damage()
+
+func _on_attack_area_body_entered(body: Node2D) -> void:
+	if body.has_method("take_damage"):
+		body.take_damage()
+
+func take_damage():
+	health -= 1
+	print("Player HP: ", health)
+
+	if health <= 0:
+		global_position = spawn_position
+		velocity = Vector2.ZERO
+		health = 3
