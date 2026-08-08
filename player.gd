@@ -14,6 +14,15 @@ var jump_buffer_timer := 0.0
 @export var camera_look_speed := 50.0
 
 @onready var camera := $Camera2D
+@onready var attack_hitbox := $AttackArea/CollisionShape2D
+
+var is_attacking := false
+@export var death_y := 650.0
+var spawn_position: Vector2
+
+func _ready():
+	spawn_position = global_position
+	attack_hitbox.disabled = true
 
 func _physics_process(delta):
 	var direction = Input.get_axis("ui_left", "ui_right")
@@ -59,4 +68,30 @@ func _physics_process(delta):
 	if Input.is_action_just_released("ui_accept") and velocity.y < 0:
 		velocity.y *= jump_cut
 
+	if global_position.y > death_y:
+		global_position = spawn_position
+		velocity = Vector2.ZERO
+
+	if Input.is_action_just_pressed("attack") and not is_attacking:
+		attack()
+
 	move_and_slide()
+
+func attack():
+	is_attacking = true
+	attack_hitbox.set_deferred("disabled", false)
+
+	await get_tree().create_timer(0.12).timeout
+
+	attack_hitbox.set_deferred("disabled", true)
+	is_attacking = false
+
+
+func _on_checkpoint_body_entered(body: Node2D) -> void:
+	if body == self:
+		spawn_position = global_position
+
+
+func _on_attack_area_area_entered(area: Area2D) -> void:
+	if area.has_method("take_damage"):
+		area.take_damage()

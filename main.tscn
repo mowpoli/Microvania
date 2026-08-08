@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bt0ydrj8kmtjg"]
 
 [ext_resource type="Script" uid="uid://bxcs6yvlo8bql" path="res://player.gd" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://qxj5bkkxfarx" path="res://dummy.gd" id="2_0xm2m"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h0jfm"]
 size = Vector2(1600, 50)
@@ -8,25 +9,61 @@ size = Vector2(1600, 50)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ryepx"]
 size = Vector2(40, 60)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_i6x1h"]
+size = Vector2(50, 40)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3pm27"]
 size = Vector2(50, 500)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bl6ij"]
+size = Vector2(250, 30)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4nvk2"]
+size = Vector2(60, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mpml7"]
+size = Vector2(50, 70)
+
 [node name="Node2D" type="Node2D" unique_id=656272768]
 
-[node name="StaticBody2D (Floor)" type="StaticBody2D" parent="." unique_id=167917517]
+[node name="StaticBody2D (Floor)Left" type="StaticBody2D" parent="." unique_id=167917517]
+position = Vector2(-128, 15)
+scale = Vector2(0.8, 1)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D (Floor)" unique_id=2072721033]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D (Floor)Left" unique_id=2072721033]
 position = Vector2(800, 500)
+scale = Vector2(0.8, 1)
 shape = SubResource("RectangleShape2D_h0jfm")
 
-[node name="ColorRect" type="ColorRect" parent="StaticBody2D (Floor)" unique_id=1662491407]
+[node name="ColorRect" type="ColorRect" parent="StaticBody2D (Floor)Left" unique_id=1662491407]
 custom_minimum_size = Vector2(1600, 50)
+offset_left = 159.99998
 offset_top = 475.0
-offset_right = 800.0
+offset_right = 1760.0
 offset_bottom = 525.0
+scale = Vector2(0.8, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="StaticBody2D (Floor)Right" type="StaticBody2D" parent="." unique_id=1736830754]
+position = Vector2(-11, 92)
+scale = Vector2(0.6, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D (Floor)Right" unique_id=637544132]
+position = Vector2(2310, 408)
+scale = Vector2(0.6, 1)
+shape = SubResource("RectangleShape2D_h0jfm")
+
+[node name="ColorRect" type="ColorRect" parent="StaticBody2D (Floor)Right" unique_id=864489376]
+custom_minimum_size = Vector2(1600, 50)
+offset_left = 1829.9999
+offset_top = 383.0
+offset_right = 3430.0
+offset_bottom = 433.0
+scale = Vector2(0.6, 1)
+metadata/_edit_use_anchors_ = true
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=1735170214]
-position = Vector2(200, 300)
+position = Vector2(117, 443)
 script = ExtResource("1_ig7tw")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=504156625]
@@ -38,6 +75,7 @@ offset_top = -30.0
 offset_right = 20.0
 offset_bottom = 30.0
 color = Color(1, 0.13333334, 0.2627451, 1)
+metadata/_edit_use_anchors_ = true
 
 [node name="Camera2D" type="Camera2D" parent="Player" unique_id=140780725]
 limit_left = 0
@@ -45,6 +83,12 @@ limit_top = 0
 limit_right = 1600
 limit_bottom = 500
 position_smoothing_enabled = true
+
+[node name="AttackArea" type="Area2D" parent="Player" unique_id=1530978251]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/AttackArea" unique_id=670879477]
+position = Vector2(45, 0)
+shape = SubResource("RectangleShape2D_i6x1h")
 
 [node name="StaticBody2D2 (Wallelft)" type="StaticBody2D" parent="." unique_id=1864121525]
 
@@ -66,3 +110,80 @@ shape = SubResource("RectangleShape2D_3pm27")
 [node name="ColorRect" type="ColorRect" parent="StaticBody2D2 (WallRight))" unique_id=1907707691]
 offset_right = 50.0
 offset_bottom = 500.0
+
+[node name="StaticBody2D (Plat01)" type="StaticBody2D" parent="." unique_id=140724268]
+position = Vector2(807, 403)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D (Plat01)" unique_id=2083872351]
+shape = SubResource("RectangleShape2D_bl6ij")
+
+[node name="ColorRect" type="ColorRect" parent="StaticBody2D (Plat01)" unique_id=484097411]
+offset_left = -125.0
+offset_top = -15.0
+offset_right = 125.0
+offset_bottom = 15.0
+metadata/_edit_use_anchors_ = true
+
+[node name="StaticBody2D (Plat02)" type="StaticBody2D" parent="." unique_id=1478550282]
+position = Vector2(1142, 304)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D (Plat02)" unique_id=169627620]
+shape = SubResource("RectangleShape2D_bl6ij")
+
+[node name="ColorRect" type="ColorRect" parent="StaticBody2D (Plat02)" unique_id=1691582867]
+offset_left = -125.0
+offset_top = -15.0
+offset_right = 125.0
+offset_bottom = 15.0
+metadata/_edit_use_anchors_ = true
+
+[node name="StaticBody2D (Plat03)" type="StaticBody2D" parent="." unique_id=1073642769]
+position = Vector2(935, 251)
+scale = Vector2(0.5, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D (Plat03)" unique_id=1550399709]
+position = Vector2(-62, 0)
+scale = Vector2(0.5, 1)
+shape = SubResource("RectangleShape2D_bl6ij")
+
+[node name="ColorRect" type="ColorRect" parent="StaticBody2D (Plat03)" unique_id=800749237]
+offset_left = -125.0
+offset_top = -15.0
+offset_right = 125.0
+offset_bottom = 15.0
+scale = Vector2(0.5, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="Checkpoint" type="Area2D" parent="." unique_id=195817977]
+position = Vector2(1187, 377)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Checkpoint" unique_id=1110075120]
+position = Vector2(29, 41)
+shape = SubResource("RectangleShape2D_4nvk2")
+
+[node name="ColorRect" type="ColorRect" parent="Checkpoint" unique_id=1090667859]
+offset_left = -1.0
+offset_top = 1.0
+offset_right = 59.0
+offset_bottom = 81.0
+color = Color(1, 1, 0.41960785, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="Dummy" type="Area2D" parent="." unique_id=693956580]
+position = Vector2(426, 419)
+script = ExtResource("2_0xm2m")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Dummy" unique_id=1361968754]
+position = Vector2(26, 34)
+shape = SubResource("RectangleShape2D_mpml7")
+
+[node name="ColorRect" type="ColorRect" parent="Dummy" unique_id=1753438573]
+offset_left = 1.0
+offset_top = -1.0
+offset_right = 51.0
+offset_bottom = 69.0
+color = Color(1, 0.40392157, 1, 1)
+metadata/_edit_use_anchors_ = true
+
+[connection signal="area_entered" from="Player/AttackArea" to="Player" method="_on_attack_area_area_entered"]
+[connection signal="body_entered" from="Checkpoint" to="Player" method="_on_checkpoint_body_entered"]
