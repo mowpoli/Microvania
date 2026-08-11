@@ -4,7 +4,7 @@ extends CharacterBody2D
 @export var acceleration := 900.0
 @export var friction := 1200.0
 @export var gravity := 1400.0
-@export var jump_force := -550.0
+@export var jump_force := -600.0
 @export var jump_cut := 0.5
 @export var coyote_time := 0.12
 var coyote_timer := 0.0
@@ -20,7 +20,6 @@ var facing_direction := 1.0
 @onready var attack_area := $AttackArea
 
 var is_attacking := false
-@export var death_y := 650.0
 var spawn_position: Vector2
 @export var health := 3
 
@@ -77,10 +76,6 @@ func _physics_process(delta):
 	if Input.is_action_just_released("ui_accept") and velocity.y < 0:
 		velocity.y *= jump_cut
 
-	if global_position.y > death_y:
-		global_position = spawn_position
-		velocity = Vector2.ZERO
-
 	if Input.is_action_just_pressed("attack") and not is_attacking:
 		attack()
 
@@ -114,8 +109,8 @@ func _on_attack_area_body_entered(body: Node2D) -> void:
 	if body.has_method("take_damage"):
 		body.take_damage()
 
-func take_damage():
-	health -= 1
+func take_damage(amount := 1):
+	health -= amount
 	print("Player HP: ", health)
 
 	if health <= 0:

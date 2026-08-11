@@ -1,17 +1,11 @@
 [gd_scene format=3 uid="uid://bt0ydrj8kmtjg"]
 
-[ext_resource type="Script" uid="uid://bxcs6yvlo8bql" path="res://player.gd" id="1_ig7tw"]
+[ext_resource type="PackedScene" uid="uid://batw20yf3twju" path="res://player.tscn" id="1_h2yge"]
 [ext_resource type="Script" uid="uid://qxj5bkkxfarx" path="res://dummy.gd" id="2_0xm2m"]
 [ext_resource type="Script" uid="uid://dgqlant2dfu8i" path="res://enemy.gd" id="3_h2yge"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h0jfm"]
 size = Vector2(1600, 50)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ryepx"]
-size = Vector2(40, 60)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_i6x1h"]
-size = Vector2(50, 40)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3pm27"]
 size = Vector2(50, 500)
@@ -72,40 +66,8 @@ offset_bottom = 433.0
 scale = Vector2(0.6, 1)
 metadata/_edit_use_anchors_ = true
 
-[node name="Player" type="CharacterBody2D" parent="." unique_id=1735170214]
+[node name="Player" parent="." unique_id=1027063559 instance=ExtResource("1_h2yge")]
 position = Vector2(117, 443)
-script = ExtResource("1_ig7tw")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=504156625]
-shape = SubResource("RectangleShape2D_ryepx")
-
-[node name="ColorRect" type="ColorRect" parent="Player" unique_id=668388322]
-offset_left = -20.0
-offset_top = -30.0
-offset_right = 20.0
-offset_bottom = 30.0
-color = Color(1, 0.13333334, 0.2627451, 1)
-metadata/_edit_use_anchors_ = true
-
-[node name="Camera2D" type="Camera2D" parent="Player" unique_id=140780725]
-limit_left = 0
-limit_top = 0
-limit_right = 1600
-limit_bottom = 500
-position_smoothing_enabled = true
-
-[node name="AttackArea" type="Area2D" parent="Player" unique_id=1530978251]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/AttackArea" unique_id=670879477]
-shape = SubResource("RectangleShape2D_i6x1h")
-
-[node name="AttackVisual" type="ColorRect" parent="Player/AttackArea" unique_id=403523166]
-visible = false
-offset_left = -25.0
-offset_top = -20.0
-offset_right = 25.0
-offset_bottom = 20.0
-color = Color(0.47784525, 0.5820828, 0.23538151, 1)
 
 [node name="StaticBody2D2 (Wallelft)" type="StaticBody2D" parent="." unique_id=1864121525]
 
@@ -242,9 +204,6 @@ shape = SubResource("RectangleShape2D_n5ubx")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy/DetectionArea" unique_id=1803111419]
 shape = SubResource("RectangleShape2D_v63ap")
 
-[connection signal="area_entered" from="Player/AttackArea" to="Player" method="_on_attack_area_area_entered"]
-[connection signal="body_entered" from="Player/AttackArea" to="Player" method="_on_attack_area_body_entered"]
-[connection signal="body_entered" from="Checkpoint" to="Player" method="_on_checkpoint_body_entered"]
 [connection signal="body_entered" from="Enemy/DamageArea" to="Enemy" method="_on_damage_area_body_entered"]
 [connection signal="body_entered" from="Enemy/DetectionArea" to="Enemy" method="_on_detection_area_body_entered"]
 [connection signal="body_exited" from="Enemy/DetectionArea" to="Enemy" method="_on_detection_area_body_exited"]

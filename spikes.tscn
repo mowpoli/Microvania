@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://bxevpju4gyuyo"]
+
+[ext_resource type="Script" uid="uid://c5thljjai1gmp" path="res://spikes.gd" id="1_s0g1x"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_h0jfm"]
+size = Vector2(150, 10)
+
+[node name="Spikes" type="Area2D" unique_id=539375613]
+script = ExtResource("1_s0g1x")
+damage = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1225397594]
+shape = SubResource("RectangleShape2D_h0jfm")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1374651088]
+offset_left = -75.0
+offset_top = -5.0
+offset_right = 75.0
+offset_bottom = 5.0
+color = Color(1, 0.4627451, 0.30980393, 1)
+metadata/_edit_use_anchors_ = true
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
