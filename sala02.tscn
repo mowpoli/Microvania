@@ -1,13 +1,18 @@
 [gd_scene format=3 uid="uid://cv8yirswdjrme"]
 
+[ext_resource type="Script" uid="uid://byok7aypbbnw7" path="res://room.gd" id="1_0x7nm"]
 [ext_resource type="PackedScene" uid="uid://batw20yf3twju" path="res://player.tscn" id="1_on481"]
 [ext_resource type="PackedScene" uid="uid://drl0swgr4sled" path="res://block.tscn" id="2_5lxll"]
 [ext_resource type="PackedScene" uid="uid://bxevpju4gyuyo" path="res://spikes.tscn" id="3_lcbo2"]
+[ext_resource type="Script" uid="uid://cmb3xd37doe3y" path="res://room_exit.gd" id="5_3vbmq"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_h0jfm"]
 
 [node name="Sala02" type="Node2D" unique_id=618031820]
+script = ExtResource("1_0x7nm")
 
 [node name="Player" parent="." unique_id=1027063559 instance=ExtResource("1_on481")]
-position = Vector2(1140, 1767)
+position = Vector2(125, 333)
 
 [node name="Block3" parent="." unique_id=63052430 instance=ExtResource("2_5lxll")]
 position = Vector2(968.00006, 60)
@@ -183,3 +188,19 @@ scale = Vector2(1.165, 17.72)
 
 [node name="Spikes" parent="." unique_id=539375613 instance=ExtResource("3_lcbo2")]
 position = Vector2(723, 2058)
+
+[node name="SpawnFromSala01" type="Marker2D" parent="." unique_id=698038814]
+position = Vector2(108, 335)
+
+[node name="ExitSala01" type="Area2D" parent="." unique_id=1852066266]
+position = Vector2(0, 266)
+script = ExtResource("5_3vbmq")
+target_scene = "uid://c43e6txyllrc2"
+target_spawn = "SpawnFromSala02"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ExitSala01" unique_id=861461576]
+position = Vector2(0, -15)
+scale = Vector2(1, 12.35)
+shape = SubResource("RectangleShape2D_h0jfm")
+
+[connection signal="body_entered" from="ExitSala01" to="ExitSala01" method="_on_body_entered"]
