@@ -8,6 +8,10 @@ size = Vector2(40, 60)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_i6x1h"]
 size = Vector2(50, 40)
 
+[sub_resource type="LabelSettings" id="LabelSettings_4flbx"]
+outline_size = 9
+outline_color = Color(0, 0, 0, 1)
+
 [node name="Player" type="CharacterBody2D" unique_id=1027063559]
 script = ExtResource("1_4flbx")
 
@@ -41,6 +45,16 @@ offset_top = -20.0
 offset_right = 25.0
 offset_bottom = 20.0
 color = Color(0.47784525, 0.5820828, 0.23538151, 1)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=854565862]
+
+[node name="HealthLabel" type="Label" parent="CanvasLayer" unique_id=215663193]
+offset_left = 101.0
+offset_top = 168.0
+offset_right = 141.0
+offset_bottom = 191.0
+text = "HP: 3"
+label_settings = SubResource("LabelSettings_4flbx")
 
 [connection signal="area_entered" from="AttackArea" to="." method="_on_attack_area_area_entered"]
 [connection signal="body_entered" from="AttackArea" to="." method="_on_attack_area_body_entered"]

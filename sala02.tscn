@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://drl0swgr4sled" path="res://block.tscn" id="2_5lxll"]
 [ext_resource type="PackedScene" uid="uid://bxevpju4gyuyo" path="res://spikes.tscn" id="3_lcbo2"]
 [ext_resource type="Script" uid="uid://cmb3xd37doe3y" path="res://room_exit.gd" id="5_3vbmq"]
+[ext_resource type="PackedScene" uid="uid://ba1oweuf0pqfk" path="res://enemy.tscn" id="6_espbi"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h0jfm"]
 
@@ -12,7 +13,7 @@
 script = ExtResource("1_0x7nm")
 
 [node name="Player" parent="." unique_id=1027063559 instance=ExtResource("1_on481")]
-position = Vector2(1738, 2004)
+position = Vector2(114, 328)
 
 [node name="Block3" parent="." unique_id=63052430 instance=ExtResource("2_5lxll")]
 position = Vector2(968.00006, 60)
@@ -188,6 +189,7 @@ scale = Vector2(1.165, 17.72)
 
 [node name="Spikes" parent="." unique_id=539375613 instance=ExtResource("3_lcbo2")]
 position = Vector2(723, 2058)
+damage = 1
 
 [node name="SpawnFromSala01" type="Marker2D" parent="." unique_id=698038814]
 position = Vector2(108, 335)
@@ -207,5 +209,8 @@ shape = SubResource("RectangleShape2D_h0jfm")
 
 [node name="CameraBottomRight" type="Marker2D" parent="." unique_id=2005846025]
 position = Vector2(1935, 2170)
+
+[node name="Enemy" parent="." unique_id=952658716 instance=ExtResource("6_espbi")]
+position = Vector2(1472, 1725)
 
 [connection signal="body_entered" from="ExitSala01" to="ExitSala01" method="_on_body_entered"]

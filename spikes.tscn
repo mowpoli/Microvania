@@ -20,4 +20,7 @@ offset_bottom = 5.0
 color = Color(1, 0.4627451, 0.30980393, 1)
 metadata/_edit_use_anchors_ = true
 
+[node name="ReturnPoint" type="Marker2D" parent="." unique_id=807682410]
+position = Vector2(109, -42)
+
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

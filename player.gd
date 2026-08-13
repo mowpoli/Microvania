@@ -18,6 +18,7 @@ var facing_direction := 1.0
 @onready var attack_hitbox := $AttackArea/CollisionShape2D
 @onready var attack_visual := $AttackArea/AttackVisual
 @onready var attack_area := $AttackArea
+@onready var health_label = $CanvasLayer/HealthLabel
 
 var is_attacking := false
 var spawn_position: Vector2
@@ -28,6 +29,7 @@ func _ready():
 	spawn_position = global_position
 	attack_hitbox.disabled = true
 	attack_area.position.x = 45 * facing_direction
+	update_health_label()
 
 func _physics_process(delta):
 	var direction = Input.get_axis("ui_left", "ui_right")
@@ -109,11 +111,19 @@ func _on_attack_area_body_entered(body: Node2D) -> void:
 	if body.has_method("take_damage"):
 		body.take_damage()
 
-func take_damage(amount := 1):
+func take_damage(amount := 1) -> bool:
 	health -= amount
+	update_health_label()
 	print("Player HP: ", health)
 
 	if health <= 0:
 		global_position = spawn_position
 		velocity = Vector2.ZERO
 		health = 3
+		update_health_label()
+		return true
+
+	return false
+
+func update_health_label():
+	health_label.text = "HP: " + str(health)
