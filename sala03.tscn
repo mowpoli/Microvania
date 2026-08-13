@@ -1,0 +1,119 @@
+[gd_scene format=3 uid="uid://g7x4kyetty1h"]
+
+[ext_resource type="PackedScene" uid="uid://batw20yf3twju" path="res://player.tscn" id="1_emfxg"]
+[ext_resource type="Script" uid="uid://byok7aypbbnw7" path="res://room.gd" id="1_s6mji"]
+[ext_resource type="PackedScene" uid="uid://drl0swgr4sled" path="res://block.tscn" id="2_s6mji"]
+[ext_resource type="PackedScene" uid="uid://ba1oweuf0pqfk" path="res://enemy.tscn" id="4_utw7q"]
+[ext_resource type="PackedScene" uid="uid://b7tuth7ykw76p" path="res://enemy_barrier.tscn" id="5_o886o"]
+
+[node name="Sala03" type="Node2D" unique_id=408486341]
+script = ExtResource("1_s6mji")
+
+[node name="Player" parent="." unique_id=1027063559 instance=ExtResource("1_emfxg")]
+position = Vector2(1629, 628)
+
+[node name="Block" parent="." unique_id=565399829 instance=ExtResource("2_s6mji")]
+position = Vector2(716, 1014)
+scale = Vector2(14.3, 3.27)
+
+[node name="Block2" parent="." unique_id=1625360924 instance=ExtResource("2_s6mji")]
+position = Vector2(2233, 1077)
+scale = Vector2(16.065, 2.025)
+
+[node name="Block19" parent="." unique_id=863440367 instance=ExtResource("2_s6mji")]
+position = Vector2(1789.9999, 112)
+scale = Vector2(24.605, 2.025)
+
+[node name="Block20" parent="." unique_id=250192067 instance=ExtResource("2_s6mji")]
+position = Vector2(209, 112)
+scale = Vector2(4.185, 2.025)
+
+[node name="Block21" parent="." unique_id=1731662123 instance=ExtResource("2_s6mji")]
+position = Vector2(2036, 305)
+scale = Vector2(9.93, 2.595)
+
+[node name="Block22" parent="." unique_id=884149140 instance=ExtResource("2_s6mji")]
+position = Vector2(2974.9998, 379)
+scale = Vector2(0.94, 3.53)
+
+[node name="Block3" parent="." unique_id=1264917222 instance=ExtResource("2_s6mji")]
+position = Vector2(2166, 792)
+scale = Vector2(6.755, 1.565)
+
+[node name="Block9" parent="." unique_id=1994356750 instance=ExtResource("2_s6mji")]
+position = Vector2(1899, 729.775)
+scale = Vector2(6.755, 0.32)
+
+[node name="Block4" parent="." unique_id=1231316519 instance=ExtResource("2_s6mji")]
+position = Vector2(2719.0002, 843)
+scale = Vector2(0.425, 0.935)
+
+[node name="Block5" parent="." unique_id=1696037350 instance=ExtResource("2_s6mji")]
+position = Vector2(2745, 870)
+rotation = 1.5707964
+scale = Vector2(0.425, 0.935)
+
+[node name="Block6" parent="." unique_id=207311213 instance=ExtResource("2_s6mji")]
+position = Vector2(2646, 686.99994)
+scale = Vector2(0.425, 0.935)
+
+[node name="Block7" parent="." unique_id=1623778589 instance=ExtResource("2_s6mji")]
+position = Vector2(2671.9998, 661)
+rotation = 1.5707964
+scale = Vector2(0.425, 0.935)
+
+[node name="Block8" parent="." unique_id=1987179085 instance=ExtResource("2_s6mji")]
+position = Vector2(2912, 769)
+scale = Vector2(1.38, 0.41)
+
+[node name="Block12" parent="." unique_id=488120147 instance=ExtResource("2_s6mji")]
+position = Vector2(1339.9999, 609.99994)
+scale = Vector2(1.38, 0.335)
+
+[node name="Block13" parent="." unique_id=2078352319 instance=ExtResource("2_s6mji")]
+position = Vector2(1055, 553)
+scale = Vector2(1.38, 0.335)
+
+[node name="Block15" parent="." unique_id=269746996 instance=ExtResource("2_s6mji")]
+position = Vector2(428, 348)
+scale = Vector2(0.79, 0.335)
+
+[node name="Block16" parent="." unique_id=1223902788 instance=ExtResource("2_s6mji")]
+position = Vector2(402, 286)
+rotation = 1.5707964
+scale = Vector2(1.58, 0.335)
+
+[node name="Block17" parent="." unique_id=1197266908 instance=ExtResource("2_s6mji")]
+position = Vector2(3002, 899)
+rotation = 1.5707964
+scale = Vector2(3.01, 0.675)
+
+[node name="Block14" parent="." unique_id=1692269488 instance=ExtResource("2_s6mji")]
+position = Vector2(623.99994, 476)
+scale = Vector2(4.76, 0.335)
+
+[node name="Block10" parent="." unique_id=1538180057 instance=ExtResource("2_s6mji")]
+position = Vector2(1607.9999, 702)
+scale = Vector2(0.935, 0.855)
+
+[node name="Block11" parent="." unique_id=1459526260 instance=ExtResource("2_s6mji")]
+position = Vector2(1461.295, 946.81)
+scale = Vector2(0.71, 0.655)
+
+[node name="CameraTopLeft" type="Marker2D" parent="." unique_id=1808138932]
+position = Vector2(0, 11)
+
+[node name="CameraBottomRight" type="Marker2D" parent="." unique_id=340631699]
+position = Vector2(3030, 1174)
+
+[node name="Enemy" parent="." unique_id=952658716 instance=ExtResource("4_utw7q")]
+position = Vector2(622, 430)
+
+[node name="Enemy2" parent="." unique_id=299947107 instance=ExtResource("4_utw7q")]
+position = Vector2(1932, 685)
+
+[node name="Enemy3" parent="." unique_id=1656842543 instance=ExtResource("4_utw7q")]
+position = Vector2(1932, 947)
+
+[node name="EnemyBarrier" parent="." unique_id=234915634 instance=ExtResource("5_o886o")]
+position = Vector2(1793, 942)

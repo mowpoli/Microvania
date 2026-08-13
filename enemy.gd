@@ -1,12 +1,13 @@
 extends CharacterBody2D
 
-@export var patrol_speed := 80.0
+@export var patrol_speed := 50.0
 @export var chase_speed := 140.0
 @export var gravity := 1400.0
 @export var health := 3
 
 var direction := 1.0
 var target: Node2D = null
+@onready var floor_check: RayCast2D = $FloorCheck
 
 func _physics_process(delta):
 	if not is_on_floor():
@@ -17,6 +18,19 @@ func _physics_process(delta):
 	if target != null:
 		direction = sign(target.global_position.x - global_position.x)
 		current_speed = chase_speed
+
+	# Coloca o FloorCheck na frente do inimigo
+	floor_check.position.x = abs(floor_check.position.x) * direction
+	floor_check.force_raycast_update()
+
+	# Se não houver chão na frente
+	if is_on_floor() and not floor_check.is_colliding():
+		if target == null:
+			# Patrulhando: vira na borda
+			direction *= -1
+		else:
+			# Perseguindo: não se joga da plataforma
+			current_speed = 0.0
 
 	velocity.x = direction * current_speed
 
@@ -46,3 +60,6 @@ func _on_detection_area_body_entered(body: Node2D) -> void:
 func _on_detection_area_body_exited(body: Node2D) -> void:
 	if body == target:
 		target = null
+
+func _ready():
+	direction = [-1.0, 1.0].pick_random()

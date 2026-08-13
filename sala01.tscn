@@ -211,4 +211,10 @@ shape = SubResource("RectangleShape2D_ryepx")
 [node name="SpawnFromSala02" type="Marker2D" parent="." unique_id=342879036]
 position = Vector2(3170, 953)
 
+[node name="CameraTopLeft" type="Marker2D" parent="." unique_id=1735918449]
+position = Vector2(-14, -333)
+
+[node name="CameraBottomRight" type="Marker2D" parent="." unique_id=1039010617]
+position = Vector2(3248, 1314)
+
 [connection signal="body_entered" from="ExitSala02" to="ExitSala02" method="_on_body_entered"]

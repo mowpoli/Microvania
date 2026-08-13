@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://ba1oweuf0pqfk"]
+
+[ext_resource type="Script" uid="uid://dgqlant2dfu8i" path="res://enemy.gd" id="1_3ih25"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tc6ws"]
+size = Vector2(50, 50)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_n5ubx"]
+size = Vector2(55, 55)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v63ap"]
+size = Vector2(400, 150)
+
+[node name="Enemy" type="CharacterBody2D" unique_id=952658716]
+collision_mask = 3
+script = ExtResource("1_3ih25")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1751320295]
+shape = SubResource("RectangleShape2D_tc6ws")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1426589834]
+offset_left = -25.0
+offset_top = -25.0
+offset_right = 25.0
+offset_bottom = 25.0
+color = Color(0.9764706, 0.40784314, 0.4117647, 1)
+
+[node name="DamageArea" type="Area2D" parent="." unique_id=1088445765]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DamageArea" unique_id=456735919]
+shape = SubResource("RectangleShape2D_n5ubx")
+
+[node name="DetectionArea" type="Area2D" parent="." unique_id=715487635]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea" unique_id=1006643037]
+shape = SubResource("RectangleShape2D_v63ap")
+
+[node name="FloorCheck" type="RayCast2D" parent="." unique_id=192450683]
+position = Vector2(30, 20)
+target_position = Vector2(0, 40)
+
+[connection signal="body_entered" from="DamageArea" to="." method="_on_damage_area_body_entered"]
+[connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
+[connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]

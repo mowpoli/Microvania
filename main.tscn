@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://batw20yf3twju" path="res://player.tscn" id="1_h2yge"]
 [ext_resource type="Script" uid="uid://qxj5bkkxfarx" path="res://dummy.gd" id="2_0xm2m"]
 [ext_resource type="Script" uid="uid://dgqlant2dfu8i" path="res://enemy.gd" id="3_h2yge"]
+[ext_resource type="PackedScene" uid="uid://b7tuth7ykw76p" path="res://enemy_barrier.tscn" id="4_1bvp3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h0jfm"]
 size = Vector2(1600, 50)
@@ -203,6 +204,8 @@ shape = SubResource("RectangleShape2D_n5ubx")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy/DetectionArea" unique_id=1803111419]
 shape = SubResource("RectangleShape2D_v63ap")
+
+[node name="EnemyBarrier" parent="." unique_id=234915634 instance=ExtResource("4_1bvp3")]
 
 [connection signal="body_entered" from="Enemy/DamageArea" to="Enemy" method="_on_damage_area_body_entered"]
 [connection signal="body_entered" from="Enemy/DetectionArea" to="Enemy" method="_on_detection_area_body_entered"]
