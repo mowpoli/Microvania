@@ -5,6 +5,9 @@
 [ext_resource type="PackedScene" uid="uid://drl0swgr4sled" path="res://block.tscn" id="2_s6mji"]
 [ext_resource type="PackedScene" uid="uid://ba1oweuf0pqfk" path="res://enemy.tscn" id="4_utw7q"]
 [ext_resource type="PackedScene" uid="uid://b7tuth7ykw76p" path="res://enemy_barrier.tscn" id="5_o886o"]
+[ext_resource type="Script" uid="uid://cmb3xd37doe3y" path="res://room_exit.gd" id="6_3nvy4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ijglh"]
 
 [node name="Sala03" type="Node2D" unique_id=408486341]
 script = ExtResource("1_s6mji")
@@ -117,3 +120,18 @@ position = Vector2(1932, 947)
 
 [node name="EnemyBarrier" parent="." unique_id=234915634 instance=ExtResource("5_o886o")]
 position = Vector2(1793, 942)
+
+[node name="SpawnFromSala02" type="Marker2D" parent="." unique_id=362389429]
+position = Vector2(45, 717)
+
+[node name="ExitSala02" type="Area2D" parent="." unique_id=539650708]
+position = Vector2(8, 759.0001)
+scale = Vector2(1.15, 7.53)
+script = ExtResource("6_3nvy4")
+target_scene = "uid://cv8yirswdjrme"
+target_spawn = "SpawnFromSala03"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ExitSala02" unique_id=899770489]
+shape = SubResource("RectangleShape2D_ijglh")
+
+[connection signal="body_entered" from="ExitSala02" to="ExitSala02" method="_on_body_entered"]

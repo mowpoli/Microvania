@@ -6,14 +6,18 @@
 [ext_resource type="PackedScene" uid="uid://bxevpju4gyuyo" path="res://spikes.tscn" id="3_lcbo2"]
 [ext_resource type="Script" uid="uid://cmb3xd37doe3y" path="res://room_exit.gd" id="5_3vbmq"]
 [ext_resource type="PackedScene" uid="uid://ba1oweuf0pqfk" path="res://enemy.tscn" id="6_espbi"]
+[ext_resource type="PackedScene" uid="uid://b7tuth7ykw76p" path="res://enemy_barrier.tscn" id="7_f6h5c"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h0jfm"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ryepx"]
+size = Vector2(26, 173)
 
 [node name="Sala02" type="Node2D" unique_id=618031820]
 script = ExtResource("1_0x7nm")
 
 [node name="Player" parent="." unique_id=1027063559 instance=ExtResource("1_on481")]
-position = Vector2(114, 328)
+position = Vector2(178, 331)
 
 [node name="Block3" parent="." unique_id=63052430 instance=ExtResource("2_5lxll")]
 position = Vector2(968.00006, 60)
@@ -213,4 +217,27 @@ position = Vector2(1935, 2170)
 [node name="Enemy" parent="." unique_id=952658716 instance=ExtResource("6_espbi")]
 position = Vector2(1472, 1725)
 
+[node name="Enemy2" parent="." unique_id=1126608060 instance=ExtResource("6_espbi")]
+position = Vector2(881, 1011)
+
+[node name="Enemy3" parent="." unique_id=205886874 instance=ExtResource("6_espbi")]
+position = Vector2(222, 1004)
+
+[node name="EnemyBarrier" parent="." unique_id=234915634 instance=ExtResource("7_f6h5c")]
+position = Vector2(1116, 1027)
+
+[node name="ExitSala03" type="Area2D" parent="." unique_id=1920813302]
+position = Vector2(1922, 1946)
+script = ExtResource("5_3vbmq")
+target_scene = "uid://g7x4kyetty1h"
+target_spawn = "SpawnFromSala02"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ExitSala03" unique_id=1599602731]
+position = Vector2(-3, 4.5)
+shape = SubResource("RectangleShape2D_ryepx")
+
+[node name="SpawnFromSala03" type="Marker2D" parent="." unique_id=307800508]
+position = Vector2(1847, 2012)
+
 [connection signal="body_entered" from="ExitSala01" to="ExitSala01" method="_on_body_entered"]
+[connection signal="body_entered" from="ExitSala03" to="ExitSala03" method="_on_body_entered"]
