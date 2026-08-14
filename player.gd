@@ -2,8 +2,11 @@ extends CharacterBody2D
 
 @export var max_speed := 200.0
 @export var acceleration := 900.0
+@export var turn_acceleration := 1800.0
 @export var friction := 1200.0
 @export var gravity := 1400.0
+@export var fall_gravity := 1800.0
+@export var max_fall_speed := 900.0
 @export var jump_force := -600.0
 @export var jump_cut := 0.5
 @export var coyote_time := 0.12
@@ -45,10 +48,15 @@ func _physics_process(delta):
 )
 
 	if direction != 0:
+		var current_acceleration = acceleration
+
+		if velocity.x != 0 and sign(velocity.x) != direction:
+			current_acceleration = turn_acceleration
+
 		velocity.x = move_toward(
 			velocity.x,
 			direction * max_speed,
-			acceleration * delta
+			current_acceleration * delta
 		)
 	else:
 		velocity.x = move_toward(
@@ -58,7 +66,12 @@ func _physics_process(delta):
 		)
 
 	if not is_on_floor():
-		velocity.y += gravity * delta
+		if velocity.y > 0:
+			velocity.y += fall_gravity * delta
+		else:
+			velocity.y += gravity * delta
+
+		velocity.y = min(velocity.y, max_fall_speed)
 
 	if is_on_floor():
 		coyote_timer = coyote_time
