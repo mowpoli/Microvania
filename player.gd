@@ -22,6 +22,7 @@ var facing_direction := 1.0
 @onready var attack_visual := $AttackArea/AttackVisual
 @onready var attack_area := $AttackArea
 @onready var health_label = $CanvasLayer/HealthLabel
+@onready var anim: AnimatedSprite2D = $AnimatedSprite2D
 
 var is_attacking := false
 var spawn_position: Vector2
@@ -36,16 +37,19 @@ func _ready():
 
 func _physics_process(delta):
 	var direction = Input.get_axis("ui_left", "ui_right")
+
 	if direction != 0:
 		facing_direction = direction
 		attack_area.position.x = 45 * facing_direction
+		anim.flip_h = facing_direction < 0
+
 	var target_camera_x = direction * camera_look_ahead
 
 	camera.offset.x = move_toward(
 		camera.offset.x,
 		target_camera_x,
 		camera_look_speed * delta
-)
+	)
 
 	if direction != 0:
 		var current_acceleration = acceleration
@@ -94,17 +98,28 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("attack") and not is_attacking:
 		attack()
 
+	if not is_attacking:
+		if abs(velocity.x) > 5:
+			anim.play("walk")
+		else:
+			anim.play("idle")
+
 	move_and_slide()
 
 func attack():
 	is_attacking = true
+	anim.play("bite")
 	attack_hitbox.set_deferred("disabled", false)
-	attack_visual.visible = true
+	attack_visual.visible = false
 
 	await get_tree().create_timer(0.12).timeout
 
 	attack_hitbox.set_deferred("disabled", true)
 	attack_visual.visible = false
+
+	if anim.is_playing():
+		await anim.animation_finished
+
 	is_attacking = false
 
 
