@@ -1,12 +1,17 @@
 [gd_scene format=3 uid="uid://bmvl85o45dr"]
 
+[ext_resource type="Script" uid="uid://byok7aypbbnw7" path="res://room.gd" id="1_74g21"]
 [ext_resource type="PackedScene" uid="uid://batw20yf3twju" path="res://player.tscn" id="1_84bkc"]
 [ext_resource type="PackedScene" uid="uid://drl0swgr4sled" path="res://block.tscn" id="2_lbpiq"]
+[ext_resource type="Script" uid="uid://cmb3xd37doe3y" path="res://room_exit.gd" id="4_sglsf"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3ytgo"]
 
 [node name="Sala04" type="Node2D" unique_id=1617998018]
+script = ExtResource("1_74g21")
 
 [node name="Player" parent="." unique_id=1027063559 instance=ExtResource("1_84bkc")]
-position = Vector2(519, 691)
+position = Vector2(565, 687)
 
 [node name="Block" parent="." unique_id=565399829 instance=ExtResource("2_lbpiq")]
 position = Vector2(198, 1055)
@@ -135,3 +140,24 @@ scale = Vector2(3.775, 3.64)
 [node name="Block17" parent="." unique_id=2057285868 instance=ExtResource("2_lbpiq")]
 position = Vector2(1883, 1400)
 scale = Vector2(7.53, 2.175)
+
+[node name="CameraTopLeft" type="Marker2D" parent="." unique_id=440826629]
+position = Vector2(8, -191)
+
+[node name="CameraBottomRight" type="Marker2D" parent="." unique_id=896351678]
+position = Vector2(2250, 1502)
+
+[node name="SpawnFromSala04" type="Marker2D" parent="." unique_id=17268889]
+position = Vector2(63, 981)
+
+[node name="ExitSala03" type="Area2D" parent="." unique_id=707621970]
+position = Vector2(13.000004, 913.99994)
+scale = Vector2(1.15, 10.485)
+script = ExtResource("4_sglsf")
+target_scene = "uid://g7x4kyetty1h"
+target_spawn = "SpawnFromSala04"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ExitSala03" unique_id=77499289]
+shape = SubResource("RectangleShape2D_3ytgo")
+
+[connection signal="body_entered" from="ExitSala03" to="ExitSala03" method="_on_body_entered"]

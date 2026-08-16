@@ -134,4 +134,18 @@ target_spawn = "SpawnFromSala03"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ExitSala02" unique_id=899770489]
 shape = SubResource("RectangleShape2D_ijglh")
 
+[node name="ExitSala04" type="Area2D" parent="." unique_id=593636111]
+position = Vector2(3012, 650.00006)
+scale = Vector2(1.15, 10.485)
+script = ExtResource("6_3nvy4")
+target_scene = "uid://bmvl85o45dr"
+target_spawn = "SpawnFromSala04"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ExitSala04" unique_id=1297428250]
+shape = SubResource("RectangleShape2D_ijglh")
+
+[node name="SpawnFromSala04" type="Marker2D" parent="." unique_id=1264268400]
+position = Vector2(2953, 709)
+
 [connection signal="body_entered" from="ExitSala02" to="ExitSala02" method="_on_body_entered"]
+[connection signal="body_entered" from="ExitSala04" to="ExitSala04" method="_on_body_entered"]
