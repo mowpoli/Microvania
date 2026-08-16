@@ -268,6 +268,7 @@ outline_color = Color(0, 0, 0, 1)
 script = ExtResource("1_4flbx")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1379908043]
+visible = false
 position = Vector2(-8.36, 13.995)
 scale = Vector2(2.595, 2.595)
 sprite_frames = SubResource("SpriteFrames_ryepx")
@@ -279,7 +280,6 @@ frame_progress = 1.0
 shape = SubResource("RectangleShape2D_ryepx")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=741332413]
-visible = false
 offset_left = -20.0
 offset_top = -30.0
 offset_right = 20.0
@@ -288,6 +288,7 @@ color = Color(1, 0.13333334, 0.2627451, 1)
 metadata/_edit_use_anchors_ = true
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=286680355]
+limit_enabled = false
 limit_left = 0
 limit_top = 0
 limit_right = 3500
