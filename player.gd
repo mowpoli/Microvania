@@ -64,7 +64,7 @@ func _physics_process(delta):
 	if is_on_floor():
 		air_dash_available = true
 
-	if Input.is_action_just_pressed("dash") and dash_cooldown_timer <= 0.0 and not is_dashing:
+	if GameState.has_dash and Input.is_action_just_pressed("dash") and dash_cooldown_timer <= 0.0 and not is_dashing:
 		if is_on_floor() or air_dash_available:
 			is_dashing = true
 			dash_timer = dash_duration

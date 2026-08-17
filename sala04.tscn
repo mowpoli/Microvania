@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://batw20yf3twju" path="res://player.tscn" id="1_84bkc"]
 [ext_resource type="PackedScene" uid="uid://drl0swgr4sled" path="res://block.tscn" id="2_lbpiq"]
 [ext_resource type="Script" uid="uid://cmb3xd37doe3y" path="res://room_exit.gd" id="4_sglsf"]
+[ext_resource type="PackedScene" path="res://npc.tscn" id="5_3ytgo"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3ytgo"]
 
@@ -11,7 +12,7 @@
 script = ExtResource("1_74g21")
 
 [node name="Player" parent="." unique_id=1027063559 instance=ExtResource("1_84bkc")]
-position = Vector2(1567, 283)
+position = Vector2(973, 382)
 
 [node name="Block" parent="." unique_id=565399829 instance=ExtResource("2_lbpiq")]
 position = Vector2(198, 1055)
@@ -159,5 +160,8 @@ target_spawn = "SpawnFromSala04"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ExitSala03" unique_id=77499289]
 shape = SubResource("RectangleShape2D_3ytgo")
+
+[node name="NPC" parent="." unique_id=1655605524 instance=ExtResource("5_3ytgo")]
+position = Vector2(1401, 327)
 
 [connection signal="body_entered" from="ExitSala03" to="ExitSala03" method="_on_body_entered"]
