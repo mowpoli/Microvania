@@ -13,7 +13,7 @@ position = Vector2(257, 336)
 script = ExtResource("1_jwgsg")
 
 [node name="Player" parent="." unique_id=1027063559 instance=ExtResource("1_tcwbw")]
-position = Vector2(402, 1207)
+position = Vector2(2033, 476)
 
 [node name="Block" parent="." unique_id=565399829 instance=ExtResource("2_4jmjh")]
 position = Vector2(402, 1283)
@@ -164,7 +164,7 @@ position = Vector2(3031, 640)
 scale = Vector2(4.24, 2.385)
 
 [node name="Block38" parent="." unique_id=1102035678 instance=ExtResource("2_4jmjh")]
-position = Vector2(2841, 553)
+position = Vector2(2767, 553)
 scale = Vector2(4.24, 0.645)
 
 [node name="Block39" parent="." unique_id=1871323797 instance=ExtResource("2_4jmjh")]

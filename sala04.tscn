@@ -11,7 +11,7 @@
 script = ExtResource("1_74g21")
 
 [node name="Player" parent="." unique_id=1027063559 instance=ExtResource("1_84bkc")]
-position = Vector2(565, 687)
+position = Vector2(1567, 283)
 
 [node name="Block" parent="." unique_id=565399829 instance=ExtResource("2_lbpiq")]
 position = Vector2(198, 1055)
@@ -31,27 +31,27 @@ scale = Vector2(1.06, 0.45)
 
 [node name="Block19" parent="." unique_id=1532529910 instance=ExtResource("2_lbpiq")]
 position = Vector2(1630, 1270)
-scale = Vector2(0.805, 0.45)
+scale = Vector2(1.895, 0.45)
 
 [node name="Block21" parent="." unique_id=1313470421 instance=ExtResource("2_lbpiq")]
 position = Vector2(2139, 1185)
-scale = Vector2(0.84, 0.45)
+scale = Vector2(1.895, 0.45)
 
 [node name="Block22" parent="." unique_id=317673582 instance=ExtResource("2_lbpiq")]
 position = Vector2(1630, 1085)
-scale = Vector2(0.805, 0.45)
+scale = Vector2(1.895, 0.45)
 
 [node name="Block23" parent="." unique_id=1816103559 instance=ExtResource("2_lbpiq")]
 position = Vector2(2139, 993.00006)
-scale = Vector2(0.84, 0.45)
+scale = Vector2(1.895, 0.45)
 
 [node name="Block24" parent="." unique_id=85642143 instance=ExtResource("2_lbpiq")]
 position = Vector2(1630, 892)
-scale = Vector2(0.805, 0.45)
+scale = Vector2(1.895, 0.45)
 
 [node name="Block26" parent="." unique_id=1418426171 instance=ExtResource("2_lbpiq")]
-position = Vector2(1676.465, 737.635)
-scale = Vector2(1.68, 0.36)
+position = Vector2(1658, 738)
+scale = Vector2(1.38, 0.36)
 
 [node name="Block27" parent="." unique_id=69236996 instance=ExtResource("2_lbpiq")]
 position = Vector2(2105.0002, 403)
@@ -63,7 +63,7 @@ scale = Vector2(2.375, 0.835)
 
 [node name="Block25" parent="." unique_id=1297125074 instance=ExtResource("2_lbpiq")]
 position = Vector2(2139, 799)
-scale = Vector2(0.84, 0.45)
+scale = Vector2(1.895, 0.45)
 
 [node name="Block12" parent="." unique_id=787526290 instance=ExtResource("2_lbpiq")]
 position = Vector2(976, 865)

@@ -13,6 +13,14 @@ extends CharacterBody2D
 var coyote_timer := 0.0
 @export var jump_buffer_time := 0.12
 var jump_buffer_timer := 0.0
+@export var dash_speed := 1000.0
+@export var dash_duration := 0.22
+@export var dash_cooldown := 1.00
+
+var is_dashing := false
+var dash_timer := 0.0
+var dash_cooldown_timer := 0.0
+var air_dash_available := true
 @export var camera_look_ahead := 10.0
 @export var camera_look_speed := 50.0
 var facing_direction := 1.0
@@ -50,6 +58,34 @@ func _physics_process(delta):
 		target_camera_x,
 		camera_look_speed * delta
 	)
+
+	dash_cooldown_timer = max(dash_cooldown_timer - delta, 0.0)
+
+	if is_on_floor():
+		air_dash_available = true
+
+	if Input.is_action_just_pressed("dash") and dash_cooldown_timer <= 0.0 and not is_dashing:
+		if is_on_floor() or air_dash_available:
+			is_dashing = true
+			dash_timer = dash_duration
+			dash_cooldown_timer = dash_cooldown
+
+			if not is_on_floor():
+				air_dash_available = false
+
+	if is_dashing:
+		velocity.x = facing_direction * dash_speed
+		velocity.y = 0.0
+
+		dash_timer -= delta
+
+		move_and_slide()
+
+		if dash_timer <= 0.0:
+			is_dashing = false
+			velocity.x = 0.0
+
+		return
 
 	if direction != 0:
 		var current_acceleration = acceleration
@@ -110,7 +146,7 @@ func attack():
 	is_attacking = true
 	anim.play("bite")
 	attack_hitbox.set_deferred("disabled", false)
-	attack_visual.visible = false
+	attack_visual.visible = true
 
 	await get_tree().create_timer(0.12).timeout
 
