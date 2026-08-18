@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://cmb3xd37doe3y" path="res://room_exit.gd" id="5_3vbmq"]
 [ext_resource type="PackedScene" uid="uid://ba1oweuf0pqfk" path="res://enemy.tscn" id="6_espbi"]
 [ext_resource type="PackedScene" uid="uid://b7tuth7ykw76p" path="res://enemy_barrier.tscn" id="7_f6h5c"]
+[ext_resource type="PackedScene" uid="uid://d4enebbavo0rr" path="res://flying_enemy.tscn" id="8_x16lc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h0jfm"]
 
@@ -17,7 +18,7 @@ size = Vector2(26, 173)
 script = ExtResource("1_0x7nm")
 
 [node name="Player" parent="." unique_id=1027063559 instance=ExtResource("1_on481")]
-position = Vector2(114, 325)
+position = Vector2(245, 322)
 
 [node name="Block3" parent="." unique_id=63052430 instance=ExtResource("2_5lxll")]
 position = Vector2(968.00006, 60)
@@ -239,5 +240,18 @@ shape = SubResource("RectangleShape2D_ryepx")
 [node name="SpawnFromSala03" type="Marker2D" parent="." unique_id=307800508]
 position = Vector2(1847, 2012)
 
+[node name="FlyingEnemy" parent="." unique_id=549808994 instance=ExtResource("8_x16lc")]
+position = Vector2(797, 204)
+ideal_distance = 145.0
+vertical_recovery_speed = 123.0
+
+[node name="LeftLimit" parent="FlyingEnemy/PatrolPoints" parent_id_path=PackedInt32Array(549808994, 1501621569) index="0" unique_id=1786177918]
+position = Vector2(-303, 23)
+
+[node name="RightLimit" parent="FlyingEnemy/PatrolPoints" parent_id_path=PackedInt32Array(549808994, 1501621569) index="1" unique_id=1961850675]
+position = Vector2(334, 6)
+
 [connection signal="body_entered" from="ExitSala01" to="ExitSala01" method="_on_body_entered"]
 [connection signal="body_entered" from="ExitSala03" to="ExitSala03" method="_on_body_entered"]
+
+[editable path="FlyingEnemy"]

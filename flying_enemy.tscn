@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://d4enebbavo0rr"]
+
+[ext_resource type="Script" uid="uid://rfky53ro40vq" path="res://flying_enemy.gd" id="1_flying_enemy"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_flying_enemy"]
+size = Vector2(50, 30)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_detection"]
+radius = 280.0
+
+[node name="FlyingEnemy" type="Node2D" unique_id=163468663]
+script = ExtResource("1_flying_enemy")
+
+[node name="PatrolPoints" type="Node2D" parent="." unique_id=1501621569]
+
+[node name="LeftLimit" type="Marker2D" parent="PatrolPoints" unique_id=1786177918]
+position = Vector2(-150, 0)
+
+[node name="RightLimit" type="Marker2D" parent="PatrolPoints" unique_id=1961850675]
+position = Vector2(150, 0)
+
+[node name="Body" type="CharacterBody2D" parent="." unique_id=212353575]
+motion_mode = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Body" unique_id=1458076317]
+shape = SubResource("RectangleShape2D_flying_enemy")
+
+[node name="ColorRect" type="ColorRect" parent="Body" unique_id=1175177617]
+offset_left = -25.0
+offset_top = -15.0
+offset_right = 25.0
+offset_bottom = 15.0
+color = Color(0.494118, 0.705882, 1, 1)
+
+[node name="DetectionArea" type="Area2D" parent="Body" unique_id=747881888]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Body/DetectionArea" unique_id=780489117]
+shape = SubResource("CircleShape2D_detection")
+
+[connection signal="body_entered" from="Body/DetectionArea" to="." method="_on_detection_area_body_entered"]
+[connection signal="body_exited" from="Body/DetectionArea" to="." method="_on_detection_area_body_exited"]
