@@ -15,6 +15,9 @@ enum State {
 	RECOVERING,
 }
 
+@export_category("Stats")
+@export var health := 3
+
 @export_category("Activation")
 @export_range(1.0, 2000.0, 1.0, "or_greater") var wake_range := 280.0:
 	set(value):
@@ -29,6 +32,7 @@ enum State {
 @export_range(1.0, 1000.0, 1.0, "or_greater") var hover_radius_x := 150.0
 @export_range(1.0, 1000.0, 1.0, "or_greater") var hover_radius_y := 70.0
 @export_range(1.0, 1000.0, 1.0, "or_greater") var hover_speed := 90.0
+@export_range(0.0, 1000.0, 1.0, "or_greater") var approach_speed := 45.0
 @export_range(1.0, 3000.0, 1.0, "or_greater") var hover_acceleration := 260.0
 @export_range(0.0, 100.0, 0.5, "or_greater") var oscillation_amplitude := 8.0
 @export_range(0.0, 10.0, 0.05, "or_greater") var oscillation_frequency := 1.0
@@ -48,6 +52,7 @@ enum State {
 
 var state := State.SLEEPING
 var target: Node2D
+var hover_center := Vector2.ZERO
 var hover_target := Vector2.ZERO
 var hover_target_timer := 0.0
 var oscillation_time := 0.0
@@ -58,6 +63,7 @@ var peck_direction := Vector2.RIGHT
 var peck_start_position := Vector2.ZERO
 var dealt_damage_this_peck := false
 var facing_direction := 1.0
+var obstacle_avoidance_side := 1.0
 
 @onready var body: CharacterBody2D = $Body
 @onready var visual: Node2D = $Body/Visual
@@ -76,6 +82,8 @@ func _ready() -> void:
 	body.velocity = Vector2.ZERO
 	body.rotation = 0.0
 	visual.scale.x = facing_direction
+	hover_center = body.position
+	obstacle_avoidance_side = -1.0 if randf() < 0.5 else 1.0
 
 
 func _physics_process(delta: float) -> void:
@@ -159,14 +167,21 @@ func _process_hover(delta: float) -> void:
 
 
 func _process_hover_motion(delta: float) -> void:
+	_update_hover_approach(delta)
+
 	hover_target_timer -= delta
-	if hover_target_timer <= 0.0 or body.position.distance_to(hover_target) <= hover_target_tolerance:
+	var current_hover_target := hover_center + hover_target
+	if (
+		hover_target_timer <= 0.0
+		or body.position.distance_to(current_hover_target) <= hover_target_tolerance
+	):
 		_choose_hover_target()
+		current_hover_target = hover_center + hover_target
 
 	var vertical_offset := sin(
 		oscillation_time * TAU * oscillation_frequency + oscillation_phase
 	) * oscillation_amplitude
-	var desired_position := hover_target + Vector2(0.0, vertical_offset)
+	var desired_position := current_hover_target + Vector2(0.0, vertical_offset)
 	var to_destination := desired_position - body.position
 	var desired_velocity := to_destination * 2.5
 	if desired_velocity.length() > hover_speed:
@@ -176,6 +191,31 @@ func _process_hover_motion(delta: float) -> void:
 		desired_velocity,
 		hover_acceleration * delta
 	)
+
+
+func _update_hover_approach(delta: float) -> void:
+	if approach_speed <= 0.0 or not _is_target_in_aggro_range():
+		return
+
+	var has_clear_line_of_sight := _has_clear_line_of_sight()
+	if (
+		body.global_position.distance_to(target.global_position) <= attack_range
+		and has_clear_line_of_sight
+	):
+		return
+
+	var target_local_position := to_local(target.global_position)
+	var approach_direction := (target_local_position - body.position).normalized()
+	if approach_direction == Vector2.ZERO:
+		return
+
+	if not has_clear_line_of_sight:
+		var lateral_direction := Vector2(-approach_direction.y, approach_direction.x)
+		approach_direction = (
+			approach_direction + lateral_direction * obstacle_avoidance_side * 0.85
+		).normalized()
+
+	hover_center += approach_direction * approach_speed * delta
 
 
 func _process_recovery(delta: float) -> void:
@@ -345,6 +385,8 @@ func _handle_motion_collision(collision: KinematicCollision2D) -> void:
 		_finish_peck()
 	else:
 		body.velocity = Vector2.ZERO
+		hover_center = body.position
+		obstacle_avoidance_side *= -1.0
 		_choose_hover_target()
 
 
@@ -354,6 +396,15 @@ func _damage_player_once(player: Node) -> void:
 	if player.has_method("take_damage"):
 		player.take_damage(contact_damage)
 		dealt_damage_this_peck = true
+
+
+func take_damage() -> void:
+	if Engine.is_editor_hint():
+		return
+
+	health -= 1
+	if health <= 0:
+		queue_free()
 
 
 func _is_player(candidate: Node) -> bool:

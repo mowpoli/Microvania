@@ -21,19 +21,19 @@ size = Vector2(50, 70)
 
 [node name="StaticBody2D (Floor)Left" type="StaticBody2D" parent="." unique_id=167917517]
 position = Vector2(-128, 15)
-scale = Vector2(0.8, 1)
+scale = Vector2(1.425, 1.095)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D (Floor)Left" unique_id=2072721033]
-position = Vector2(800, 500)
+position = Vector2(682.807, 500.45663)
 scale = Vector2(0.8, 1)
 shape = SubResource("RectangleShape2D_h0jfm")
 
 [node name="ColorRect" type="ColorRect" parent="StaticBody2D (Floor)Left" unique_id=1662491407]
 custom_minimum_size = Vector2(1600, 50)
-offset_left = 159.99998
-offset_top = 475.0
-offset_right = 1760.0
-offset_bottom = 525.0
+offset_left = 42.80703
+offset_top = 475.7991
+offset_right = 1642.807
+offset_bottom = 525.7991
 scale = Vector2(0.8, 1)
 metadata/_edit_use_anchors_ = true
 
@@ -56,7 +56,7 @@ scale = Vector2(0.6, 1)
 metadata/_edit_use_anchors_ = true
 
 [node name="Player" parent="." unique_id=1027063559 instance=ExtResource("1_h2yge")]
-position = Vector2(117, 443)
+position = Vector2(740, 477)
 
 [node name="StaticBody2D2 (Wallelft)" type="StaticBody2D" parent="." unique_id=1864121525]
 

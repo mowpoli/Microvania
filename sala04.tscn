@@ -11,9 +11,6 @@
 [node name="Sala04" type="Node2D" unique_id=1617998018]
 script = ExtResource("1_74g21")
 
-[node name="Player" parent="." unique_id=1027063559 instance=ExtResource("1_84bkc")]
-position = Vector2(973, 382)
-
 [node name="Block" parent="." unique_id=565399829 instance=ExtResource("2_lbpiq")]
 position = Vector2(198, 1055)
 scale = Vector2(3.955, 0.685)
@@ -67,7 +64,7 @@ position = Vector2(2139, 799)
 scale = Vector2(1.895, 0.45)
 
 [node name="Block12" parent="." unique_id=787526290 instance=ExtResource("2_lbpiq")]
-position = Vector2(976, 865)
+position = Vector2(957, 865)
 scale = Vector2(1.06, 0.45)
 
 [node name="Block13" parent="." unique_id=612649646 instance=ExtResource("2_lbpiq")]
@@ -131,7 +128,7 @@ position = Vector2(1120.0001, -87.00001)
 scale = Vector2(22.375, 2.175)
 
 [node name="Block32" parent="." unique_id=1751967373 instance=ExtResource("2_lbpiq")]
-position = Vector2(2083, -14.815)
+position = Vector2(2083, -63.999996)
 scale = Vector2(3.775, 3.64)
 
 [node name="Block33" parent="." unique_id=732070130 instance=ExtResource("2_lbpiq")]
@@ -161,7 +158,25 @@ target_spawn = "SpawnFromSala04"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ExitSala03" unique_id=77499289]
 shape = SubResource("RectangleShape2D_3ytgo")
 
+[node name="SpawnFromSala11" type="Marker2D" parent="." unique_id=1940183544]
+position = Vector2(2176, 316)
+
+[node name="ExitSala11" type="Area2D" parent="." unique_id=1286655263]
+position = Vector2(2259, 276)
+scale = Vector2(1, 11.655)
+script = ExtResource("4_sglsf")
+target_scene = "uid://b6wfxtgx1umx7"
+target_spawn = "SpawnFromSala04"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ExitSala11" unique_id=1508220566]
+position = Vector2(0, -1.973402)
+shape = SubResource("RectangleShape2D_3ytgo")
+
 [node name="NPC" parent="." unique_id=1655605524 instance=ExtResource("5_3ytgo")]
 position = Vector2(1401, 327)
 
+[node name="Player" parent="." unique_id=1027063559 instance=ExtResource("1_84bkc")]
+position = Vector2(153, 938)
+
 [connection signal="body_entered" from="ExitSala03" to="ExitSala03" method="_on_body_entered"]
+[connection signal="body_entered" from="ExitSala11" to="ExitSala11" method="_on_body_entered"]

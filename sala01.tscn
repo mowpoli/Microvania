@@ -13,7 +13,10 @@ position = Vector2(257, 336)
 script = ExtResource("1_jwgsg")
 
 [node name="Player" parent="." unique_id=1027063559 instance=ExtResource("1_tcwbw")]
-position = Vector2(2033, 476)
+position = Vector2(334, 1207)
+
+[node name="InitialRespawn" type="Marker2D" parent="." unique_id=1173701058]
+position = Vector2(334, 1207)
 
 [node name="Block" parent="." unique_id=565399829 instance=ExtResource("2_4jmjh")]
 position = Vector2(402, 1283)

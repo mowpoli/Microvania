@@ -16,7 +16,6 @@ func _ready():
 
 		if spawn != null:
 			player.global_position = spawn.global_position
-			player.spawn_position = spawn.global_position
 			camera.reset_smoothing()
 
 		GameState.next_spawn = ""

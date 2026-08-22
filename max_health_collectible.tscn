@@ -1,0 +1,35 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://max_health_collectible.gd" id="1_collectible"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_collectible"]
+size = Vector2(32, 32)
+
+[node name="MaxHealthCollectible" type="Area2D"]
+collision_layer = 0
+script = ExtResource("1_collectible")
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="Gem" type="Polygon2D" parent="Visual"]
+polygon = PackedVector2Array(0, -16, 16, 0, 0, 16, -16, 0)
+color = Color(0.2, 0.9, 0.45, 1)
+
+[node name="PlusHorizontal" type="ColorRect" parent="Visual"]
+offset_left = -8.0
+offset_top = -2.0
+offset_right = 8.0
+offset_bottom = 2.0
+mouse_filter = 2
+
+[node name="PlusVertical" type="ColorRect" parent="Visual"]
+offset_left = -2.0
+offset_top = -8.0
+offset_right = 2.0
+offset_bottom = 8.0
+mouse_filter = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_collectible")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

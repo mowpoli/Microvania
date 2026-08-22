@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://d4enebbavo0rr"]
 
 [ext_resource type="Script" uid="uid://rfky53ro40vq" path="res://flying_enemy.gd" id="1_flying_enemy"]
+[ext_resource type="Script" uid="uid://dy40a3xk220in" path="res://flying_enemy_hurtbox.gd" id="2_hurtbox"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_flying_enemy"]
 size = Vector2(50, 30)
@@ -13,6 +14,8 @@ radius = 280.0
 
 [node name="FlyingEnemy" type="Node2D" unique_id=163468663]
 script = ExtResource("1_flying_enemy")
+preparation_turn_speed = 20.0
+peck_distance = 250.0
 
 [node name="PatrolPoints" type="Node2D" parent="." unique_id=1501621569]
 visible = false
@@ -45,7 +48,7 @@ color = Color(1, 0.741176, 0.25098, 1)
 polygon = PackedVector2Array(20, -9, 35, 0, 20, 9)
 
 [node name="DamageArea" type="Area2D" parent="Body" unique_id=1879197841]
-collision_layer = 0
+script = ExtResource("2_hurtbox")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Body/DamageArea" unique_id=621391287]
 shape = SubResource("RectangleShape2D_damage")

@@ -33,12 +33,11 @@ var facing_direction := 1.0
 @onready var anim: AnimatedSprite2D = $AnimatedSprite2D
 
 var is_attacking := false
-var spawn_position: Vector2
 @export var health := 3
 
 
 func _ready():
-	spawn_position = global_position
+	health = GameState.current_health
 	attack_hitbox.disabled = true
 	attack_area.position.x = 45 * facing_direction
 	update_health_label()
@@ -159,9 +158,14 @@ func attack():
 	is_attacking = false
 
 
-func _on_checkpoint_body_entered(body: Node2D) -> void:
-	if body == self:
-		spawn_position = global_position
+func _on_checkpoint_body_entered(body: Node2D, marker_path := "Checkpoint") -> void:
+	if body != self:
+		return
+
+	var current_scene := get_tree().current_scene
+	if current_scene != null:
+		GameState.respawn_scene = current_scene.scene_file_path
+		GameState.respawn_marker = marker_path
 
 
 func _on_attack_area_area_entered(area: Area2D) -> void:
@@ -177,14 +181,17 @@ func _on_attack_area_body_entered(body: Node2D) -> void:
 
 func take_damage(amount := 1) -> bool:
 	health -= amount
+	GameState.current_health = health
 	update_health_label()
 	print("Player HP: ", health)
 
 	if health <= 0:
-		global_position = spawn_position
 		velocity = Vector2.ZERO
-		health = 3
+		health = GameState.max_health
+		GameState.current_health = GameState.max_health
+		GameState.next_spawn = GameState.respawn_marker
 		update_health_label()
+		get_tree().change_scene_to_file(GameState.respawn_scene)
 		return true
 
 	return false
