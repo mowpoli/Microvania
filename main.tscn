@@ -2,14 +2,11 @@
 
 [ext_resource type="PackedScene" uid="uid://batw20yf3twju" path="res://player.tscn" id="1_h2yge"]
 [ext_resource type="Script" uid="uid://qxj5bkkxfarx" path="res://dummy.gd" id="2_0xm2m"]
-[ext_resource type="Script" uid="uid://dgqlant2dfu8i" path="res://enemy.gd" id="3_h2yge"]
 [ext_resource type="PackedScene" uid="uid://b7tuth7ykw76p" path="res://enemy_barrier.tscn" id="4_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://d4enebbavo0rr" path="res://flying_enemy.tscn" id="4_lquwl"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h0jfm"]
 size = Vector2(1600, 50)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_3pm27"]
-size = Vector2(50, 500)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bl6ij"]
 size = Vector2(250, 30)
@@ -19,15 +16,6 @@ size = Vector2(60, 80)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mpml7"]
 size = Vector2(50, 70)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_tc6ws"]
-size = Vector2(50, 50)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_n5ubx"]
-size = Vector2(55, 55)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_v63ap"]
-size = Vector2(400, 150)
 
 [node name="Node2D" type="Node2D" unique_id=656272768]
 
@@ -72,38 +60,6 @@ position = Vector2(117, 443)
 
 [node name="StaticBody2D2 (Wallelft)" type="StaticBody2D" parent="." unique_id=1864121525]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2 (Wallelft)" unique_id=1832742164]
-position = Vector2(25, 250)
-shape = SubResource("RectangleShape2D_3pm27")
-
-[node name="ColorRect" type="ColorRect" parent="StaticBody2D2 (Wallelft)" unique_id=202631022]
-offset_right = 50.0
-offset_bottom = 500.0
-
-[node name="StaticBody2D2 (WallRight))" type="StaticBody2D" parent="." unique_id=311552472]
-position = Vector2(1550, 0)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2 (WallRight))" unique_id=371974054]
-position = Vector2(25, 250)
-shape = SubResource("RectangleShape2D_3pm27")
-
-[node name="ColorRect" type="ColorRect" parent="StaticBody2D2 (WallRight))" unique_id=1907707691]
-offset_right = 50.0
-offset_bottom = 500.0
-
-[node name="StaticBody2D (Plat01)" type="StaticBody2D" parent="." unique_id=140724268]
-position = Vector2(807, 403)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D (Plat01)" unique_id=2083872351]
-shape = SubResource("RectangleShape2D_bl6ij")
-
-[node name="ColorRect" type="ColorRect" parent="StaticBody2D (Plat01)" unique_id=484097411]
-offset_left = -125.0
-offset_top = -15.0
-offset_right = 125.0
-offset_bottom = 15.0
-metadata/_edit_use_anchors_ = true
-
 [node name="StaticBody2D (Plat02)" type="StaticBody2D" parent="." unique_id=1478550282]
 position = Vector2(1142, 304)
 
@@ -117,41 +73,8 @@ offset_right = 125.0
 offset_bottom = 15.0
 metadata/_edit_use_anchors_ = true
 
-[node name="StaticBody2D (Plat03)" type="StaticBody2D" parent="." unique_id=1073642769]
-position = Vector2(935, 251)
-scale = Vector2(0.5, 1)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D (Plat03)" unique_id=1550399709]
-position = Vector2(-62, 0)
-scale = Vector2(0.5, 1)
-shape = SubResource("RectangleShape2D_bl6ij")
-
-[node name="ColorRect" type="ColorRect" parent="StaticBody2D (Plat03)" unique_id=800749237]
-offset_left = -125.0
-offset_top = -15.0
-offset_right = 125.0
-offset_bottom = 15.0
-scale = Vector2(0.5, 1)
-metadata/_edit_use_anchors_ = true
-
-[node name="StaticBody2D (Plat04)" type="StaticBody2D" parent="." unique_id=1545387385]
-position = Vector2(693, 441)
-scale = Vector2(0.3, 1.88)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D (Plat04)" unique_id=804497573]
-scale = Vector2(0.3, 1.88)
-shape = SubResource("RectangleShape2D_bl6ij")
-
-[node name="ColorRect" type="ColorRect" parent="StaticBody2D (Plat04)" unique_id=868689632]
-offset_left = -36.66667
-offset_top = -28.19149
-offset_right = 213.33333
-offset_bottom = 1.8085098
-scale = Vector2(0.3, 1.88)
-metadata/_edit_use_anchors_ = true
-
 [node name="Checkpoint" type="Area2D" parent="." unique_id=195817977]
-position = Vector2(1187, 377)
+position = Vector2(1444, 375)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Checkpoint" unique_id=1110075120]
 position = Vector2(29, 41)
@@ -166,7 +89,7 @@ color = Color(1, 1, 0.41960785, 1)
 metadata/_edit_use_anchors_ = true
 
 [node name="Dummy" type="Area2D" parent="." unique_id=693956580]
-position = Vector2(732, 303)
+position = Vector2(1185, 213)
 script = ExtResource("2_0xm2m")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Dummy" unique_id=1361968754]
@@ -181,32 +104,8 @@ offset_bottom = 69.0
 color = Color(1, 0.40392157, 1, 1)
 metadata/_edit_use_anchors_ = true
 
-[node name="Enemy" type="CharacterBody2D" parent="." unique_id=254821797]
-position = Vector2(450, 450)
-script = ExtResource("3_h2yge")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy" unique_id=656468973]
-shape = SubResource("RectangleShape2D_tc6ws")
-
-[node name="ColorRect" type="ColorRect" parent="Enemy" unique_id=490546881]
-offset_left = -25.0
-offset_top = -25.0
-offset_right = 25.0
-offset_bottom = 25.0
-color = Color(0.9764706, 0.40784314, 0.4117647, 1)
-
-[node name="DamageArea" type="Area2D" parent="Enemy" unique_id=498622323]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy/DamageArea" unique_id=773948168]
-shape = SubResource("RectangleShape2D_n5ubx")
-
-[node name="DetectionArea" type="Area2D" parent="Enemy" unique_id=1048537129]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy/DetectionArea" unique_id=1803111419]
-shape = SubResource("RectangleShape2D_v63ap")
-
 [node name="EnemyBarrier" parent="." unique_id=234915634 instance=ExtResource("4_1bvp3")]
 
-[connection signal="body_entered" from="Enemy/DamageArea" to="Enemy" method="_on_damage_area_body_entered"]
-[connection signal="body_entered" from="Enemy/DetectionArea" to="Enemy" method="_on_detection_area_body_entered"]
-[connection signal="body_exited" from="Enemy/DetectionArea" to="Enemy" method="_on_detection_area_body_exited"]
+[node name="FlyingEnemy" parent="." unique_id=163468663 instance=ExtResource("4_lquwl")]
+position = Vector2(1041, 264)
+activation_radius = 350.0

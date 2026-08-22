@@ -243,7 +243,6 @@ position = Vector2(1847, 2012)
 [node name="FlyingEnemy" parent="." unique_id=549808994 instance=ExtResource("8_x16lc")]
 position = Vector2(797, 204)
 ideal_distance = 145.0
-vertical_recovery_speed = 123.0
 
 [node name="LeftLimit" parent="FlyingEnemy/PatrolPoints" parent_id_path=PackedInt32Array(549808994, 1501621569) index="0" unique_id=1786177918]
 position = Vector2(-303, 23)

@@ -1,193 +1,315 @@
 extends Node2D
 
-@export_range(0.0, 1000.0, 1.0, "or_greater") var patrol_speed := 80.0
-@export_range(1.0, 2000.0, 1.0, "or_greater") var horizontal_acceleration := 240.0
-@export_range(0.0, 50.0, 0.5, "or_greater") var vertical_amplitude := 8.0
-@export_range(0.0, 10.0, 0.05, "or_greater") var vertical_frequency := 1.0
-@export_range(0.0, 1000.0, 1.0, "or_greater") var approach_speed := 140.0
-@export_range(1.0, 2000.0, 1.0, "or_greater") var approach_acceleration := 300.0
-@export_range(0.0, 1000.0, 1.0, "or_greater") var ideal_distance := 120.0
-@export_range(0.0, 5.0, 0.05, "or_greater") var preparation_duration := 0.35
-@export_range(0.0, 2000.0, 1.0, "or_greater") var dive_speed := 420.0
-@export_range(0.0, 1000.0, 1.0, "or_greater") var reposition_speed := 120.0
-@export_range(0.0, 1000.0, 1.0, "or_greater") var vertical_recovery_speed := 160.0
-
-enum AttackPhase {
-	APPROACH,
+enum State {
+	SLEEPING,
+	HOVERING,
 	PREPARING,
-	DIVING,
-	REPOSITIONING
+	PECKING,
+	RECOVERING,
 }
 
-var direction := 1.0
+@export_category("Activation")
+@export_range(1.0, 2000.0, 1.0, "or_greater") var activation_radius := 280.0
+
+@export_category("Hover")
+@export_range(1.0, 1000.0, 1.0, "or_greater") var hover_radius_x := 150.0
+@export_range(1.0, 1000.0, 1.0, "or_greater") var hover_radius_y := 70.0
+@export_range(1.0, 1000.0, 1.0, "or_greater") var hover_speed := 90.0
+@export_range(1.0, 3000.0, 1.0, "or_greater") var hover_acceleration := 260.0
+@export_range(0.0, 100.0, 0.5, "or_greater") var oscillation_amplitude := 8.0
+@export_range(0.0, 10.0, 0.05, "or_greater") var oscillation_frequency := 1.0
+@export_range(0.1, 10.0, 0.1, "or_greater") var hover_target_min_time := 0.8
+@export_range(0.1, 10.0, 0.1, "or_greater") var hover_target_max_time := 1.8
+@export_range(1.0, 100.0, 1.0, "or_greater") var hover_target_tolerance := 12.0
+@export_range(0.0, 20.0, 0.1, "or_greater") var hover_turn_speed := 5.0
+
+@export_category("Attack")
+@export_range(1.0, 2000.0, 1.0, "or_greater") var attack_range := 220.0
+@export_range(0.0, 5.0, 0.05, "or_greater") var preparation_duration := 0.35
+@export_range(0.0, 30.0, 0.1, "or_greater") var preparation_turn_speed := 12.0
+@export_range(1.0, 3000.0, 1.0, "or_greater") var peck_speed := 460.0
+@export_range(1.0, 2000.0, 1.0, "or_greater") var peck_distance := 190.0
+@export_range(0.0, 20.0, 0.1, "or_greater") var attack_cooldown := 2.5
+@export_range(0, 100, 1, "or_greater") var contact_damage := 1
+
+var state := State.SLEEPING
+var target: Node2D
+var hover_target := Vector2.ZERO
+var hover_target_timer := 0.0
 var oscillation_time := 0.0
 var oscillation_phase := 0.0
-var base_height := 0.0
-var target: Node2D = null
-var attack_phase := AttackPhase.APPROACH
 var preparation_timer := 0.0
-var dive_direction := Vector2.ZERO
-var dive_start_position := Vector2.ZERO
+var cooldown_timer := 0.0
+var peck_direction := Vector2.RIGHT
+var peck_start_position := Vector2.ZERO
+var dealt_damage_this_peck := false
+var facing_direction := 1.0
 
 @onready var body: CharacterBody2D = $Body
-@onready var left_limit: Marker2D = $PatrolPoints/LeftLimit
-@onready var right_limit: Marker2D = $PatrolPoints/RightLimit
+@onready var visual: Node2D = $Body/Visual
+@onready var activation_shape: CollisionShape2D = $ActivationArea/CollisionShape2D
+@onready var line_of_sight: RayCast2D = $LineOfSight
 
 
 func _ready() -> void:
-	direction = [-1.0, 1.0].pick_random()
 	oscillation_phase = randf_range(0.0, TAU)
-	base_height = body.position.y
-	body.position.y = base_height + sin(oscillation_phase) * vertical_amplitude
+	_configure_activation_radius()
+	line_of_sight.add_exception(body)
+	body.velocity = Vector2.ZERO
+	body.rotation = 0.0
+	visual.scale.x = facing_direction
 
 
 func _physics_process(delta: float) -> void:
-	var patrol_min_x: float = minf(left_limit.position.x, right_limit.position.x)
-	var patrol_max_x: float = maxf(left_limit.position.x, right_limit.position.x)
-	var has_target := is_instance_valid(target)
-	var is_diving := false
-	var started_inside_patrol := (
-		body.position.x >= patrol_min_x and body.position.x <= patrol_max_x
-	)
+	if state == State.SLEEPING:
+		body.velocity = Vector2.ZERO
+		return
 
-	if not has_target:
+	if not is_instance_valid(target):
 		target = null
-		attack_phase = AttackPhase.APPROACH
 
+	cooldown_timer = maxf(cooldown_timer - delta, 0.0)
 	oscillation_time += delta
 
-	if has_target:
-		var hover_velocity := cos(
-			oscillation_time * TAU * vertical_frequency + oscillation_phase
-		) * vertical_amplitude * TAU * vertical_frequency
+	match state:
+		State.HOVERING:
+			_process_hover(delta)
+		State.PREPARING:
+			_process_preparation(delta)
+		State.PECKING:
+			_process_peck()
+		State.RECOVERING:
+			_process_recovery(delta)
 
-		match attack_phase:
-			AttackPhase.APPROACH:
-				var to_player := target.global_position - body.global_position
-				var desired_velocity := Vector2(0.0, hover_velocity)
+	var collision := body.move_and_collide(body.velocity * delta)
+	_handle_motion_collision(collision)
 
-				if to_player.length() > ideal_distance:
-					desired_velocity += to_player.normalized() * approach_speed
-				else:
-					attack_phase = AttackPhase.PREPARING
-					preparation_timer = preparation_duration
+	if state == State.PECKING:
+		var traveled := body.global_position.distance_to(peck_start_position)
+		if traveled >= peck_distance:
+			_finish_peck()
 
-				body.velocity = body.velocity.move_toward(
-					desired_velocity,
-					approach_acceleration * delta
-				)
 
-			AttackPhase.PREPARING:
-				var desired_velocity := Vector2(0.0, hover_velocity)
-				body.velocity = body.velocity.move_toward(
-					desired_velocity,
-					approach_acceleration * delta
-				)
-				preparation_timer -= delta
+func _process_hover(delta: float) -> void:
+	_process_hover_motion(delta)
+	body.rotation = 0.0
+	_update_hover_facing()
 
-				if preparation_timer <= 0.0:
-					dive_direction = (
-						target.global_position - body.global_position
-					).normalized()
-					if dive_direction == Vector2.ZERO:
-						dive_direction = Vector2(direction, 0.0)
-					dive_start_position = body.global_position
-					attack_phase = AttackPhase.DIVING
+	if _can_start_attack():
+		_start_preparation()
 
-			AttackPhase.DIVING:
-				body.velocity = dive_direction * dive_speed
-				is_diving = true
 
-			AttackPhase.REPOSITIONING:
-				var to_player := target.global_position - body.global_position
-				var distance_error := to_player.length() - ideal_distance
-				var desired_height := target.global_position.y - ideal_distance
-				var height_error := desired_height - body.global_position.y
-				var desired_velocity := Vector2(
-					clampf(
-						to_player.x * 4.0,
-						-reposition_speed,
-						reposition_speed
-					),
-					clampf(
-						height_error * 4.0,
-						-vertical_recovery_speed,
-						vertical_recovery_speed
-					)
-				)
-				desired_velocity.y += hover_velocity
+func _process_hover_motion(delta: float) -> void:
+	hover_target_timer -= delta
+	if hover_target_timer <= 0.0 or body.position.distance_to(hover_target) <= hover_target_tolerance:
+		_choose_hover_target()
 
-				var movement_without_hover := body.velocity - Vector2(0.0, hover_velocity)
-				if (
-					absf(distance_error) <= 8.0
-					and absf(height_error) <= 8.0
-					and movement_without_hover.length() <= 15.0
-				):
-					attack_phase = AttackPhase.PREPARING
-					preparation_timer = preparation_duration
+	var vertical_offset := sin(
+		oscillation_time * TAU * oscillation_frequency + oscillation_phase
+	) * oscillation_amplitude
+	var desired_position := hover_target + Vector2(0.0, vertical_offset)
+	var to_destination := desired_position - body.position
+	var desired_velocity := to_destination * 2.5
+	if desired_velocity.length() > hover_speed:
+		desired_velocity = desired_velocity.normalized() * hover_speed
 
-				body.velocity = body.velocity.move_toward(
-					desired_velocity,
-					approach_acceleration * delta
-				)
+	body.velocity = body.velocity.move_toward(
+		desired_velocity,
+		hover_acceleration * delta
+	)
+
+
+func _process_recovery(delta: float) -> void:
+	_process_hover_motion(delta)
+	body.rotation = rotate_toward(body.rotation, 0.0, hover_turn_speed * delta)
+
+	if is_zero_approx(body.rotation):
+		body.rotation = 0.0
+		state = State.HOVERING
+		_update_hover_facing()
+
+
+func _process_preparation(delta: float) -> void:
+	body.velocity = body.velocity.move_toward(
+		Vector2.ZERO,
+		hover_acceleration * delta
+	)
+
+	if not is_instance_valid(target):
+		_return_to_hover()
+		return
+
+	var direction_to_player := target.global_position - body.global_position
+	if direction_to_player.length_squared() > 0.001:
+		body.rotation = rotate_toward(
+			body.rotation,
+			_body_rotation_for_direction(direction_to_player),
+			preparation_turn_speed * delta
+		)
+
+	preparation_timer -= delta
+	if preparation_timer <= 0.0:
+		_begin_peck()
+
+
+func _process_peck() -> void:
+	# The direction is deliberately fixed when preparation ends.
+	body.velocity = peck_direction * peck_speed
+
+
+func _can_start_attack() -> bool:
+	if cooldown_timer > 0.0 or not is_instance_valid(target):
+		return false
+	if body.global_position.distance_to(target.global_position) > attack_range:
+		return false
+	return _has_clear_line_of_sight()
+
+
+func _start_preparation() -> void:
+	if not is_instance_valid(target):
+		return
+
+	_update_hover_facing()
+	state = State.PREPARING
+	preparation_timer = preparation_duration
+
+
+func _begin_peck() -> void:
+	if not is_instance_valid(target):
+		_return_to_hover()
+		return
+
+	peck_direction = (target.global_position - body.global_position).normalized()
+	if peck_direction == Vector2.ZERO:
+		peck_direction = Vector2.from_angle(body.rotation)
+
+	state = State.PECKING
+	peck_start_position = body.global_position
+	dealt_damage_this_peck = false
+	body.rotation = _body_rotation_for_direction(peck_direction)
+	body.velocity = peck_direction * peck_speed
+
+
+func _finish_peck() -> void:
+	cooldown_timer = attack_cooldown
+	_return_to_hover()
+
+
+func _return_to_hover() -> void:
+	state = State.RECOVERING
+	_choose_hover_target()
+
+
+func _update_hover_facing() -> void:
+	if not is_instance_valid(target):
+		return
+
+	var horizontal_distance := target.global_position.x - body.global_position.x
+	if not is_zero_approx(horizontal_distance):
+		facing_direction = signf(horizontal_distance)
+		visual.scale.x = facing_direction
+
+
+func _body_rotation_for_direction(direction_to_target: Vector2) -> float:
+	var desired_rotation := direction_to_target.angle()
+	if facing_direction < 0.0:
+		desired_rotation -= PI
+	return wrapf(desired_rotation, -PI, PI)
+
+
+func _has_clear_line_of_sight() -> bool:
+	if not is_instance_valid(target):
+		return false
+
+	line_of_sight.global_position = body.global_position
+	line_of_sight.target_position = line_of_sight.to_local(target.global_position)
+	line_of_sight.force_raycast_update()
+
+	if not line_of_sight.is_colliding():
+		return true
+
+	var collider := line_of_sight.get_collider() as Node
+	return collider != null and _is_player(collider)
+
+
+func _choose_hover_target() -> void:
+	# sqrt() distributes destinations throughout the ellipse instead of
+	# concentrating them around its center.
+	var angle := randf_range(0.0, TAU)
+	var radius_factor := sqrt(randf())
+	hover_target = Vector2(
+		cos(angle) * hover_radius_x,
+		sin(angle) * hover_radius_y
+	) * radius_factor
+
+	var minimum_time := minf(hover_target_min_time, hover_target_max_time)
+	var maximum_time := maxf(hover_target_min_time, hover_target_max_time)
+	hover_target_timer = randf_range(minimum_time, maximum_time)
+
+
+func _wake_up(player: Node2D) -> void:
+	if state != State.SLEEPING:
+		return
+
+	target = player
+	state = State.HOVERING
+	cooldown_timer = attack_cooldown
+	oscillation_time = 0.0
+	_choose_hover_target()
+
+
+func _configure_activation_radius() -> void:
+	var circle := activation_shape.shape as CircleShape2D
+	if circle == null:
+		return
+
+	circle = circle.duplicate() as CircleShape2D
+	circle.radius = activation_radius
+	activation_shape.shape = circle
+
+
+func _handle_motion_collision(collision: KinematicCollision2D) -> void:
+	if collision == null:
+		return
+
+	if state == State.PECKING:
+		var collider := collision.get_collider() as Node
+		if collider != null and _is_player(collider):
+			_damage_player_once(collider)
+		_finish_peck()
 	else:
-		if is_equal_approx(patrol_min_x, patrol_max_x):
-			body.velocity.x = move_toward(body.velocity.x, 0.0, horizontal_acceleration * delta)
-		else:
-			var stopping_distance := body.velocity.x * body.velocity.x / (2.0 * horizontal_acceleration)
-
-			if body.position.x <= patrol_min_x:
-				direction = 1.0
-			elif body.position.x >= patrol_max_x:
-				direction = -1.0
-			elif direction > 0.0 and body.velocity.x > 0.0 and body.position.x >= patrol_max_x - stopping_distance:
-				direction = -1.0
-			elif direction < 0.0 and body.velocity.x < 0.0 and body.position.x <= patrol_min_x + stopping_distance:
-				direction = 1.0
-
-			body.velocity.x = move_toward(
-				body.velocity.x,
-				direction * patrol_speed,
-				horizontal_acceleration * delta
-			)
-
-		var target_height := base_height + sin(
-			oscillation_time * TAU * vertical_frequency + oscillation_phase
-		) * vertical_amplitude
-		body.velocity.y = (target_height - body.position.y) / delta
-
-	body.move_and_slide()
-
-	if is_diving:
-		var dive_distance := body.global_position.distance_to(dive_start_position)
-		if dive_distance >= maxf(ideal_distance * 2.0, 1.0) or body.get_slide_collision_count() > 0:
-			attack_phase = AttackPhase.REPOSITIONING
-
-	if has_target:
-		base_height = body.position.y - sin(
-			oscillation_time * TAU * vertical_frequency + oscillation_phase
-		) * vertical_amplitude
-	else:
-		if started_inside_patrol:
-			body.position.x = clampf(body.position.x, patrol_min_x, patrol_max_x)
-
-		for collision_index in body.get_slide_collision_count():
-			var collision := body.get_slide_collision(collision_index)
-			if collision.get_normal().x > 0.5:
-				direction = 1.0
-				break
-			if collision.get_normal().x < -0.5:
-				direction = -1.0
-				break
+		body.velocity = Vector2.ZERO
+		_choose_hover_target()
 
 
-func _on_detection_area_body_entered(detected_body: Node2D) -> void:
-	if detected_body.name == "Player":
-		target = detected_body
-		attack_phase = AttackPhase.APPROACH
+func _damage_player_once(player: Node) -> void:
+	if dealt_damage_this_peck or contact_damage <= 0:
+		return
+	if player.has_method("take_damage"):
+		player.take_damage(contact_damage)
+		dealt_damage_this_peck = true
 
 
-func _on_detection_area_body_exited(detected_body: Node2D) -> void:
-	if detected_body == target:
-		target = null
-		attack_phase = AttackPhase.APPROACH
+func _is_player(candidate: Node) -> bool:
+	return candidate.name == &"Player" or candidate.is_in_group(&"player")
+
+
+func _on_activation_area_body_entered(detected_body: Node2D) -> void:
+	if _is_player(detected_body):
+		if state == State.SLEEPING:
+			_wake_up(detected_body)
+		elif not is_instance_valid(target):
+			target = detected_body
+
+
+func _on_damage_area_body_entered(detected_body: Node2D) -> void:
+	if state == State.PECKING and _is_player(detected_body):
+		_damage_player_once(detected_body)
+
+
+# Keeps old scene overrides loadable while migrating from the previous script.
+func _set(property: StringName, value: Variant) -> bool:
+	if property == &"ideal_distance":
+		attack_range = float(value)
+		return true
+	return false
