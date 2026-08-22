@@ -108,4 +108,4 @@ metadata/_edit_use_anchors_ = true
 
 [node name="FlyingEnemy" parent="." unique_id=163468663 instance=ExtResource("4_lquwl")]
 position = Vector2(1041, 264)
-activation_radius = 350.0
+attack_range = 351.0

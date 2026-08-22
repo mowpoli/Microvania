@@ -1,4 +1,11 @@
+@tool
 extends Node2D
+
+const WAKE_RANGE_DEBUG_COLOR := Color(0.15, 0.85, 1.0, 0.9)
+const AGGRO_RANGE_DEBUG_COLOR := Color(1.0, 0.35, 0.15, 0.9)
+const DEBUG_CIRCLE_SEGMENTS := 96
+const AGGRO_DASH_COUNT := 32
+const AGGRO_DASH_RATIO := 0.6
 
 enum State {
 	SLEEPING,
@@ -9,7 +16,14 @@ enum State {
 }
 
 @export_category("Activation")
-@export_range(1.0, 2000.0, 1.0, "or_greater") var activation_radius := 280.0
+@export_range(1.0, 2000.0, 1.0, "or_greater") var wake_range := 280.0:
+	set(value):
+		wake_range = value
+		_queue_editor_redraw()
+@export_range(1.0, 2000.0, 1.0, "or_greater") var aggro_range := 500.0:
+	set(value):
+		aggro_range = value
+		_queue_editor_redraw()
 
 @export_category("Hover")
 @export_range(1.0, 1000.0, 1.0, "or_greater") var hover_radius_x := 150.0
@@ -47,13 +61,17 @@ var facing_direction := 1.0
 
 @onready var body: CharacterBody2D = $Body
 @onready var visual: Node2D = $Body/Visual
-@onready var activation_shape: CollisionShape2D = $ActivationArea/CollisionShape2D
+@onready var wake_shape: CollisionShape2D = $WakeArea/CollisionShape2D
 @onready var line_of_sight: RayCast2D = $LineOfSight
 
 
 func _ready() -> void:
+	if Engine.is_editor_hint():
+		queue_redraw()
+		return
+
 	oscillation_phase = randf_range(0.0, TAU)
-	_configure_activation_radius()
+	_configure_wake_range()
 	line_of_sight.add_exception(body)
 	body.velocity = Vector2.ZERO
 	body.rotation = 0.0
@@ -61,12 +79,18 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if Engine.is_editor_hint():
+		return
+
 	if state == State.SLEEPING:
 		body.velocity = Vector2.ZERO
 		return
 
 	if not is_instance_valid(target):
 		target = null
+
+	if not _is_target_in_aggro_range() and state in [State.PREPARING, State.PECKING]:
+		_return_to_hover()
 
 	cooldown_timer = maxf(cooldown_timer - delta, 0.0)
 	oscillation_time += delta
@@ -88,6 +112,41 @@ func _physics_process(delta: float) -> void:
 		var traveled := body.global_position.distance_to(peck_start_position)
 		if traveled >= peck_distance:
 			_finish_peck()
+
+
+func _draw() -> void:
+	if not Engine.is_editor_hint():
+		return
+
+	draw_arc(
+		Vector2.ZERO,
+		wake_range,
+		0.0,
+		TAU,
+		DEBUG_CIRCLE_SEGMENTS,
+		WAKE_RANGE_DEBUG_COLOR,
+		2.0,
+		true
+	)
+
+	var dash_angle := TAU / AGGRO_DASH_COUNT
+	for dash_index in AGGRO_DASH_COUNT:
+		var start_angle := dash_index * dash_angle
+		draw_arc(
+			Vector2.ZERO,
+			aggro_range,
+			start_angle,
+			start_angle + dash_angle * AGGRO_DASH_RATIO,
+			4,
+			AGGRO_RANGE_DEBUG_COLOR,
+			3.0,
+			true
+		)
+
+
+func _queue_editor_redraw() -> void:
+	if Engine.is_editor_hint() and is_inside_tree():
+		queue_redraw()
 
 
 func _process_hover(delta: float) -> void:
@@ -158,7 +217,7 @@ func _process_peck() -> void:
 
 
 func _can_start_attack() -> bool:
-	if cooldown_timer > 0.0 or not is_instance_valid(target):
+	if cooldown_timer > 0.0 or not _is_target_in_aggro_range():
 		return false
 	if body.global_position.distance_to(target.global_position) > attack_range:
 		return false
@@ -201,7 +260,7 @@ func _return_to_hover() -> void:
 
 
 func _update_hover_facing() -> void:
-	if not is_instance_valid(target):
+	if not _is_target_in_aggro_range():
 		return
 
 	var horizontal_distance := target.global_position.x - body.global_position.x
@@ -258,14 +317,21 @@ func _wake_up(player: Node2D) -> void:
 	_choose_hover_target()
 
 
-func _configure_activation_radius() -> void:
-	var circle := activation_shape.shape as CircleShape2D
+func _is_target_in_aggro_range() -> bool:
+	return (
+		is_instance_valid(target)
+		and body.global_position.distance_to(target.global_position) <= aggro_range
+	)
+
+
+func _configure_wake_range() -> void:
+	var circle := wake_shape.shape as CircleShape2D
 	if circle == null:
 		return
 
 	circle = circle.duplicate() as CircleShape2D
-	circle.radius = activation_radius
-	activation_shape.shape = circle
+	circle.radius = wake_range
+	wake_shape.shape = circle
 
 
 func _handle_motion_collision(collision: KinematicCollision2D) -> void:
@@ -294,7 +360,10 @@ func _is_player(candidate: Node) -> bool:
 	return candidate.name == &"Player" or candidate.is_in_group(&"player")
 
 
-func _on_activation_area_body_entered(detected_body: Node2D) -> void:
+func _on_wake_area_body_entered(detected_body: Node2D) -> void:
+	if Engine.is_editor_hint():
+		return
+
 	if _is_player(detected_body):
 		if state == State.SLEEPING:
 			_wake_up(detected_body)
@@ -303,6 +372,9 @@ func _on_activation_area_body_entered(detected_body: Node2D) -> void:
 
 
 func _on_damage_area_body_entered(detected_body: Node2D) -> void:
+	if Engine.is_editor_hint():
+		return
+
 	if state == State.PECKING and _is_player(detected_body):
 		_damage_player_once(detected_body)
 
@@ -311,5 +383,8 @@ func _on_damage_area_body_entered(detected_body: Node2D) -> void:
 func _set(property: StringName, value: Variant) -> bool:
 	if property == &"ideal_distance":
 		attack_range = float(value)
+		return true
+	if property == &"activation_radius":
+		wake_range = float(value)
 		return true
 	return false

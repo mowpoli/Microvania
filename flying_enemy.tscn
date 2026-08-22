@@ -1,15 +1,15 @@
-[gd_scene load_steps=5 format=3 uid="uid://d4enebbavo0rr"]
+[gd_scene format=3 uid="uid://d4enebbavo0rr"]
 
 [ext_resource type="Script" uid="uid://rfky53ro40vq" path="res://flying_enemy.gd" id="1_flying_enemy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_flying_enemy"]
 size = Vector2(50, 30)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_activation"]
-radius = 280.0
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_damage"]
 size = Vector2(54, 34)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_wake"]
+radius = 280.0
 
 [node name="FlyingEnemy" type="Node2D" unique_id=163468663]
 script = ExtResource("1_flying_enemy")
@@ -24,43 +24,42 @@ position = Vector2(-150, 0)
 position = Vector2(150, 0)
 
 [node name="Body" type="CharacterBody2D" parent="." unique_id=212353575]
-motion_mode = 1
 collision_mask = 3
+motion_mode = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Body" unique_id=1458076317]
 shape = SubResource("RectangleShape2D_flying_enemy")
 
-[node name="Visual" type="Node2D" parent="Body"]
+[node name="Visual" type="Node2D" parent="Body" unique_id=346965001]
 
 [node name="ColorRect" type="ColorRect" parent="Body/Visual" unique_id=1175177617]
 offset_left = -25.0
 offset_top = -15.0
 offset_right = 20.0
 offset_bottom = 15.0
-color = Color(0.494118, 0.705882, 1, 1)
 mouse_filter = 2
+color = Color(0.494118, 0.705882, 1, 1)
 
-[node name="Beak" type="Polygon2D" parent="Body/Visual"]
-polygon = PackedVector2Array(20, -9, 35, 0, 20, 9)
+[node name="Beak" type="Polygon2D" parent="Body/Visual" unique_id=1932758014]
 color = Color(1, 0.741176, 0.25098, 1)
+polygon = PackedVector2Array(20, -9, 35, 0, 20, 9)
 
-[node name="DamageArea" type="Area2D" parent="Body"]
+[node name="DamageArea" type="Area2D" parent="Body" unique_id=1879197841]
 collision_layer = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Body/DamageArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Body/DamageArea" unique_id=621391287]
 shape = SubResource("RectangleShape2D_damage")
 
-[node name="ActivationArea" type="Area2D" parent="."]
+[node name="WakeArea" type="Area2D" parent="." unique_id=710379298]
 collision_layer = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ActivationArea"]
-shape = SubResource("CircleShape2D_activation")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WakeArea" unique_id=1220086860]
+shape = SubResource("CircleShape2D_wake")
 
-[node name="LineOfSight" type="RayCast2D" parent="."]
-enabled = true
+[node name="LineOfSight" type="RayCast2D" parent="." unique_id=1883024512]
 target_position = Vector2(220, 0)
 collision_mask = 3
 hit_from_inside = true
 
 [connection signal="body_entered" from="Body/DamageArea" to="." method="_on_damage_area_body_entered"]
-[connection signal="body_entered" from="ActivationArea" to="." method="_on_activation_area_body_entered"]
+[connection signal="body_entered" from="WakeArea" to="." method="_on_wake_area_body_entered"]
